@@ -8,8 +8,8 @@ import { setTokens } from '@/lib/auth'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('kakupro009@gmail.com')
+  const [password, setPassword] = useState('Kaku@009')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
