@@ -28,7 +28,7 @@ export default function LoginPage() {
       setTokens(access_token, refresh_token)
       router.push('/dashboard')
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.')
+      setError(err.response?.data?.detail || err.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
