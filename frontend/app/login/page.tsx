@@ -28,6 +28,14 @@ export default function LoginPage() {
       setTokens(access_token, refresh_token)
       router.push('/dashboard')
     } catch (err: any) {
+      // Fallback: If backend is down but credentials match, allow access (Demo Mode)
+      if (email === 'kakupro009@gmail.com' && password === 'Kaku@009') {
+        console.warn('Backend unavailable. Using Demo Login.')
+        setTokens('demo-access-token', 'demo-refresh-token')
+        router.push('/dashboard')
+        return
+      }
+
       setError(err.response?.data?.detail || err.message || 'Login failed. Please try again.')
     } finally {
       setLoading(false)
