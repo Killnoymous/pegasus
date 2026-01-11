@@ -135,6 +135,14 @@ export default function AIAgentsPage() {
   ])
 
   useEffect(() => {
+    if (showConfigModal) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+  }, [showConfigModal])
+
+  useEffect(() => {
     fetchAgents()
     fetchPhoneNumbers()
   }, [])
@@ -417,28 +425,28 @@ export default function AIAgentsPage() {
 
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="flex-1">
-                      <div className="text-[10px] font-black text-[#5e9cb9] uppercase tracking-widest mb-3">System Identity</div>
-                      <p className="text-sm text-[#8a99a8] line-clamp-3 leading-relaxed italic border-l-2 border-[#1a2126] pl-4">"{agent.system_prompt}"</p>
+                      <div className="text-[9px] font-black text-[#5e9cb9] uppercase tracking-[0.2em] mb-2">System Identity</div>
+                      <p className="text-xs text-[#8a99a8] line-clamp-2 leading-relaxed italic border-l-2 border-[#1a2126] pl-3">"{agent.system_prompt}"</p>
                     </div>
 
-                    <div className="mt-8 flex items-center justify-between text-[10px] font-black uppercase tracking-widest text-[#5e9cb9]/60 mb-4">
+                    <div className="mt-6 flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-[#5e9cb9]/60 mb-4">
                       <span>Engine: GPT-4o</span>
                       <span>Voice: Aria Neural</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => handleEditAgent(agent)}
-                        className="px-4 py-3 bg-[#5e9cb9] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#4d8aa8] shadow-xl shadow-[#5e9cb9]/10 transition-all transform active:scale-95 flex items-center justify-center gap-2"
+                        className="px-3 py-2.5 bg-[#5e9cb9] text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-[#4d8aa8] shadow-xl shadow-[#5e9cb9]/10 transition-all transform active:scale-95 flex items-center justify-center gap-2"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         Configure
                       </button>
                       <button
                         onClick={() => handleDelete(agent.id)}
-                        className="px-4 py-3 bg-[#1a2126] text-[#8a99a8] border border-[#2d383f] rounded-xl text-[10px] font-black uppercase tracking-widest hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all flex items-center justify-center gap-2"
+                        className="px-3 py-2.5 bg-[#1a2126] text-[#8a99a8] border border-[#2d383f] rounded-lg text-[9px] font-black uppercase tracking-widest hover:text-white hover:bg-red-500/20 hover:border-red-500/50 transition-all flex items-center justify-center gap-2"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                         Delete
                       </button>
                     </div>
@@ -476,7 +484,7 @@ export default function AIAgentsPage() {
 
         {/* --- Configuration Modal (TRUE FULL SCREEN OVERLAY) --- */}
         {showConfigModal && (
-          <div className="fixed inset-0 z-50 bg-[#05080a] flex flex-col animate-fadeIn overflow-hidden" role="dialog" aria-modal="true">
+          <div className="fixed inset-0 z-[100] bg-[#05080a] flex flex-col animate-fadeIn overflow-hidden" role="dialog" aria-modal="true">
             {/* Main Application Container */}
             <div className="h-full flex flex-row overflow-hidden">
 
@@ -527,34 +535,34 @@ export default function AIAgentsPage() {
               {/* Central Editor Area */}
               <div className="flex-1 flex flex-col bg-[#05080a] relative overflow-hidden">
                 {/* Immersive Header */}
-                <div className="py-10 px-12 border-b border-[#1a2126] flex items-center justify-between bg-[#0b1114]">
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-4">
-                      <h2 className="text-3xl font-black text-white tracking-tighter font-heading uppercase">{formData.agent_name || 'System Identity'}</h2>
-                      <div className="px-3 py-1 bg-[#5e9cb9]/10 text-[#5e9cb9] text-[9px] font-black rounded-lg border border-[#5e9cb9]/20 uppercase tracking-[0.2em]">Build Core v1.4.0</div>
+                <div className="py-6 px-10 border-b border-[#1a2126] flex items-center justify-between bg-[#0b1114]">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-black text-white tracking-tighter font-heading uppercase">{formData.agent_name || 'System Identity'}</h2>
+                      <div className="px-2 py-0.5 bg-[#5e9cb9]/10 text-[#5e9cb9] text-[8px] font-black rounded-md border border-[#5e9cb9]/20 uppercase tracking-[0.2em]">Build Core v1.4.0</div>
                     </div>
-                    <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest">
+                    <div className="flex items-center gap-5 text-[9px] font-black uppercase tracking-widest">
                       <span className="flex items-center gap-2 text-green-400">
-                        <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]"></span> RUNNING_STABLE
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]"></span> RUNNING_STABLE
                       </span>
                       <span className="text-[#8a99a8]">NETWORK: <span className="text-white">EDGESCALE_GLOBAL</span></span>
                       <span className="text-[#8a99a8]">LLM: <span className="text-white">GPT-4O_TURBO_LATEST</span></span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-6">
-                    <div className="bg-[#05080a] p-1.5 rounded-2xl flex border border-[#1a2126] shadow-2xl">
-                      <button onClick={() => setActiveTab('details')} className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab !== 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Visual Engine</button>
-                      <button onClick={() => setActiveTab('code')} className={`px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Logic Source</button>
+                  <div className="flex items-center gap-4">
+                    <div className="bg-[#05080a] p-1 rounded-xl flex border border-[#1a2126] shadow-2xl">
+                      <button onClick={() => setActiveTab('details')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab !== 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Visual Engine</button>
+                      <button onClick={() => setActiveTab('code')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Logic Source</button>
                     </div>
-                    <button onClick={() => setShowConfigModal(false)} className="w-14 h-14 flex items-center justify-center bg-[#1a2126] rounded-2xl text-[#8a99a8] hover:text-white transition-all border border-[#2d383f] hover:border-[#5e9cb9]/50 shadow-2xl">
-                      <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                    <button onClick={() => setShowConfigModal(false)} className="w-10 h-10 flex items-center justify-center bg-[#1a2126] rounded-xl text-[#8a99a8] hover:text-white transition-all border border-[#2d383f] hover:border-[#5e9cb9]/50 shadow-2xl">
+                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                   </div>
                 </div>
 
                 {/* Sub Navigation (Horizontal) */}
-                <div className="px-12 bg-[#0b1114] border-b border-[#1a2126] flex gap-12">
+                <div className="px-10 bg-[#0b1114] border-b border-[#1a2126] flex gap-8">
                   {['DETAILS', 'STYLING', 'KNOWLEDGE', 'CHANNELS', 'POST-CALL', 'PLAYGROUND'].map((label) => {
                     const tabMap: Record<string, string> = {
                       'DETAILS': 'details', 'STYLING': 'settings', 'KNOWLEDGE': 'knowledge_base',
@@ -563,9 +571,9 @@ export default function AIAgentsPage() {
                     const tab = tabMap[label];
                     const isActive = activeTab === tab;
                     return (
-                      <button key={label} onClick={() => setActiveTab(tab)} className={`py-8 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative ${isActive ? 'text-[#5e9cb9]' : 'text-[#8a99a8] hover:text-white'}`}>
+                      <button key={label} onClick={() => setActiveTab(tab)} className={`py-4 text-[9px] font-black uppercase tracking-[0.2em] transition-all relative ${isActive ? 'text-[#5e9cb9]' : 'text-[#8a99a8] hover:text-white'}`}>
                         {label}
-                        {isActive && <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#5e9cb9] shadow-[0_0_20px_#5e9cb9]"></div>}
+                        {isActive && <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#5e9cb9] shadow-[0_0_20px_#5e9cb9]"></div>}
                       </button>
                     )
                   })}
@@ -576,60 +584,60 @@ export default function AIAgentsPage() {
                   {/* Tabs Content Injection Point */}
                   {/* 1. Details Tab */}
                   {activeTab === 'details' && (
-                    <div className="max-w-6xl mx-auto space-y-16 animate-fadeIn">
-                      <div className="grid grid-cols-4 gap-8">
+                    <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn">
+                      <div className="grid grid-cols-4 gap-6">
                         {[
                           { l: 'PLATFORM', v: 'NEURAL_EDGE_V3', i: '🌐' },
                           { l: 'VOICE_CORE', v: 'ELEVEN_TURBO_2', i: '🎙️' },
                           { l: 'CONTEXT_WINDOW', v: '128K_TOKENS', i: '🧠' },
                           { l: 'LATENCY_MODE', v: 'ULTRA_LOW', i: '⚡' },
                         ].map(c => (
-                          <div key={c.l} className="bg-[#121a1e]/40 border border-[#1a2126] p-8 rounded-[32px] hover:border-[#5e9cb9]/40 transition-all group relative overflow-hidden shadow-2xl">
-                            <div className="absolute top-0 right-0 p-4 opacity-5 text-5xl transform translate-x-2 -translate-y-2">{c.i}</div>
-                            <div className="text-[10px] font-black uppercase tracking-widest text-[#5e9cb9] mb-3">{c.l}</div>
-                            <div className="text-sm font-black text-white group-hover:tracking-wider transition-all">{c.v}</div>
+                          <div key={c.l} className="bg-[#121a1e]/40 border border-[#1a2126] p-6 rounded-[24px] hover:border-[#5e9cb9]/40 transition-all group relative overflow-hidden shadow-2xl">
+                            <div className="absolute top-0 right-0 p-3 opacity-5 text-4xl transform translate-x-2 -translate-y-2">{c.i}</div>
+                            <div className="text-[8px] font-black uppercase tracking-widest text-[#5e9cb9] mb-2">{c.l}</div>
+                            <div className="text-xs font-black text-white group-hover:tracking-wider transition-all">{c.v}</div>
                           </div>
                         ))}
                       </div>
 
-                      <div className="space-y-6">
+                      <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-white font-heading">Base System Prompt</h3>
-                          <div className="flex items-center gap-3">
-                            <span className="text-[9px] font-black text-[#8a99a8] uppercase tracking-widest">Dynamic Sync</span>
+                          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white font-heading">Base System Prompt</h3>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[8px] font-black text-[#8a99a8] uppercase tracking-widest">Dynamic Sync</span>
                             <label className="relative inline-flex items-center cursor-pointer">
                               <input type="checkbox" className="sr-only peer" defaultChecked />
-                              <div className="w-12 h-6 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[6px] after:left-[6px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-6"></div>
+                              <div className="w-10 h-5 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-5"></div>
                             </label>
                           </div>
                         </div>
                         <textarea
-                          className="w-full bg-[#0b1114] border border-[#1a2126] rounded-[32px] p-12 text-base text-white focus:ring-1 focus:ring-[#5e9cb9]/40 placeholder-gray-800 resize-none h-48 outline-none font-medium leading-relaxed shadow-3xl transition-all"
+                          className="w-full bg-[#0b1114] border border-[#1a2126] rounded-[24px] p-8 text-sm text-white focus:ring-1 focus:ring-[#5e9cb9]/40 placeholder-gray-800 resize-none h-40 outline-none font-medium leading-relaxed shadow-3xl transition-all"
                           value={formData.system_prompt}
                           onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
                         />
                       </div>
 
-                      <div className="space-y-10 pb-20">
-                        <div className="flex items-center justify-between bg-[#0b1114] p-8 rounded-[32px] border border-[#1a2126] shadow-2xl">
+                      <div className="space-y-8 pb-10">
+                        <div className="flex items-center justify-between bg-[#0b1114] p-6 rounded-[24px] border border-[#1a2126] shadow-2xl">
                           <div className="space-y-1">
-                            <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-white">Conversational Matrix</h3>
-                            <p className="text-[10px] text-[#8a99a8] font-black uppercase tracking-widest">Define automated logic sequences</p>
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Conversational Matrix</h3>
+                            <p className="text-[9px] text-[#8a99a8] font-black uppercase tracking-widest">Define automated logic sequences</p>
                           </div>
-                          <button onClick={() => setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: [...formData.configuration.flow_steps, { id: Date.now().toString(), name: 'NEW_STEP', content: '' }] } })} className="px-10 py-4 bg-[#5e9cb9] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[#5e9cb9]/40 hover:scale-105 transition-all">Add Logic Vector</button>
+                          <button onClick={() => setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: [...formData.configuration.flow_steps, { id: Date.now().toString(), name: 'NEW_STEP', content: '' }] } })} className="px-6 py-3 bg-[#5e9cb9] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[#5e9cb9]/40 hover:scale-105 transition-all">Add Logic Vector</button>
                         </div>
 
-                        <div className="space-y-8 relative">
-                          <div className="absolute left-[40px] top-0 bottom-0 w-1 bg-gradient-to-b from-[#1a2126] via-[#2d383f] to-[#1a2126] opacity-30"></div>
+                        <div className="space-y-6 relative">
+                          <div className="absolute left-[30px] top-0 bottom-0 w-[1.5px] bg-gradient-to-b from-[#1a2126] via-[#2d383f] to-[#1a2126] opacity-30"></div>
                           {formData.configuration.flow_steps.map((step, idx) => (
-                            <div key={step.id} className="relative z-10 pl-16 group">
-                              <div className="absolute left-8 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full border-4 border-[#05080a] bg-[#1a2126] group-hover:bg-[#5e9cb9] transition-all shadow-xl group-hover:shadow-[0_0_15px_#5e9cb9] duration-500"></div>
-                              <div className="bg-[#0b1114] border border-[#1a2126] rounded-[48px] overflow-hidden hover:border-[#5e9cb9]/30 transition-all shadow-3xl">
-                                <div className="px-12 py-8 flex items-center justify-between border-b border-[#1a2126]/50 bg-[#121a1e]/40">
-                                  <div className="flex items-center gap-6">
-                                    <div className="w-10 h-10 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9] font-black text-xs border border-[#5e9cb9]/20">{String(idx + 1).padStart(2, '0')}</div>
+                            <div key={step.id} className="relative z-10 pl-12 group">
+                              <div className="absolute left-6 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-[#05080a] bg-[#1a2126] group-hover:bg-[#5e9cb9] transition-all shadow-xl group-hover:shadow-[0_0_15px_#5e9cb9] duration-500"></div>
+                              <div className="bg-[#0b1114] border border-[#1a2126] rounded-[32px] overflow-hidden hover:border-[#5e9cb9]/30 transition-all shadow-3xl">
+                                <div className="px-8 py-5 flex items-center justify-between border-b border-[#1a2126]/50 bg-[#121a1e]/40">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-8 h-8 bg-[#5e9cb9]/15 rounded-xl flex items-center justify-center text-[#5e9cb9] font-black text-[9px] border border-[#5e9cb9]/20">{String(idx + 1).padStart(2, '0')}</div>
                                     <input
-                                      className="bg-transparent border-none text-base font-black text-white focus:ring-0 p-0 w-80 outline-none tracking-tight uppercase"
+                                      className="bg-transparent border-none text-sm font-black text-white focus:ring-0 p-0 w-64 outline-none tracking-tight uppercase"
                                       value={step.name}
                                       onChange={(e) => {
                                         const n = [...formData.configuration.flow_steps]; n[idx].name = e.target.value;
@@ -637,21 +645,21 @@ export default function AIAgentsPage() {
                                       }}
                                     />
                                   </div>
-                                  <div className="flex items-center gap-6">
+                                  <div className="flex items-center gap-5">
                                     <button onClick={() => {
                                       const n = formData.configuration.flow_steps.filter((_, i) => i !== idx);
                                       setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
-                                    }} className="text-[#8a99a8] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-black text-[10px] uppercase tracking-widest">Delete Sequence</button>
-                                    <div className="w-[1px] h-6 bg-[#1a2126]"></div>
+                                    }} className="text-[#8a99a8] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-black text-[9px] uppercase tracking-widest">Remove</button>
+                                    <div className="w-[1px] h-5 bg-[#1a2126]"></div>
                                     <label className="relative inline-flex items-center cursor-pointer">
                                       <input type="checkbox" className="sr-only peer" defaultChecked />
-                                      <div className="w-12 h-6 bg-[#05080a] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.3)] after:content-[''] after:absolute after:top-[6px] after:left-[6px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-6"></div>
+                                      <div className="w-9 h-4.5 bg-[#05080a] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.3)] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:after:translate-x-4.5 shadow-inner"></div>
                                     </label>
                                   </div>
                                 </div>
-                                <div className="p-12">
+                                <div className="p-8">
                                   <textarea
-                                    className="w-full bg-transparent border-none p-0 text-lg text-[#8a99a8] focus:ring-0 resize-none h-28 leading-relaxed outline-none font-medium italic placeholder-[#1a2126]"
+                                    className="w-full bg-transparent border-none p-0 text-base text-[#8a99a8] focus:ring-0 resize-none h-24 leading-relaxed outline-none font-medium italic placeholder-[#1a2126]"
                                     placeholder="Define logic behavior..."
                                     value={step.content}
                                     onChange={(e) => {
