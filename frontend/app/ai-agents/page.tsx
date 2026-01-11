@@ -21,7 +21,15 @@ interface AIAgent {
   language: string
   voice_name: string | null
   is_active: boolean
-  configuration: any // For the new JSON config
+  configuration: {
+    flow_steps: { id: string, name: string, content: string }[]
+    background_audio: { enabled: boolean, type: string }
+    call_transfer: { enabled: boolean, number: string }
+    behavior: { filler_phrases: boolean, personality: string }
+    knowledge: { documents: string[], website: string }
+    integrations: any[]
+    post_call: { delivery: string, summary: boolean, transcript: boolean, sentiment: boolean, extraction: boolean, extracted_data: any[] }
+  }
   created_at: string
   updated_at: string
 }
@@ -113,7 +121,10 @@ export default function AIAgentsPage() {
       flow_steps: [] as { id: string, name: string, content: string }[],
       background_audio: { enabled: false, type: 'office' },
       call_transfer: { enabled: false, number: '' },
-      behavior: { filler_phrases: false, personality: 'professional' }
+      behavior: { filler_phrases: false, personality: 'professional' },
+      knowledge: { documents: [] as string[], website: '' },
+      integrations: [] as any[],
+      post_call: { delivery: 'email', summary: false, transcript: false, sentiment: false, extraction: false, extracted_data: [] as any[] }
     }
   })
 
@@ -465,18 +476,6 @@ export default function AIAgentsPage() {
                                       background_audio: { ...formData.configuration.background_audio, enabled: e.target.checked }
                                     }
                                   })}
-                                />
-                                name="bg-audio"
-                                id="bg-audio"
-                                className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
-                                checked={formData.configuration.background_audio.enabled}
-                                onChange={(e) => setFormData({
-                                  ...formData,
-                                  configuration: {
-                                    ...formData.configuration,
-                                    background_audio: { ...formData.configuration.background_audio, enabled: e.target.checked }
-                                  }
-                                })}
                                 />
                                 <label htmlFor="bg-audio" className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer ${formData.configuration.background_audio.enabled ? 'bg-indigo-600' : 'bg-gray-300'}`}></label>
                               </div>
