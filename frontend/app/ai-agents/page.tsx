@@ -661,91 +661,75 @@ export default function AIAgentsPage() {
                   {/* Tabs Content Injection Point */}
                   {/* 1. Details Tab */}
                   {activeTab === 'details' && (
-                    <div className="max-w-5xl mx-auto space-y-10 animate-fadeIn">
-                      <div className="grid grid-cols-4 gap-6">
-                        {[
-                          { l: 'PLATFORM', v: 'NEURAL_EDGE_V3', i: '🌐' },
-                          { l: 'VOICE_CORE', v: 'ELEVEN_TURBO_2', i: '🎙️' },
-                          { l: 'CONTEXT_WINDOW', v: '128K_TOKENS', i: '🧠' },
-                          { l: 'LATENCY_MODE', v: 'ULTRA_LOW', i: '⚡' },
-                        ].map(c => (
-                          <div key={c.l} className="bg-[#121a1e]/40 border border-[#1a2126] p-6 rounded-[24px] hover:border-[#5e9cb9]/40 transition-all group relative overflow-hidden shadow-2xl">
-                            <div className="absolute top-0 right-0 p-3 opacity-5 text-4xl transform translate-x-2 -translate-y-2">{c.i}</div>
-                            <div className="text-[8px] font-black uppercase tracking-widest text-[#5e9cb9] mb-2">{c.l}</div>
-                            <div className="text-xs font-black text-white group-hover:tracking-wider transition-all">{c.v}</div>
-                          </div>
-                        ))}
-                      </div>
-
+                    <div className="max-w-3xl space-y-8 animate-fadeIn">
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white font-heading">Base System Prompt</h3>
-                          <div className="flex items-center gap-2">
-                            <span className="text-[8px] font-black text-[#8a99a8] uppercase tracking-widest">Dynamic Sync</span>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" className="sr-only peer" defaultChecked />
-                              <div className="w-10 h-5 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-5"></div>
-                            </label>
-                          </div>
-                        </div>
-                        <textarea
-                          className="w-full bg-[#0b1114] border border-[#1a2126] rounded-[24px] p-8 text-sm text-white focus:ring-1 focus:ring-[#5e9cb9]/40 placeholder-gray-800 resize-none h-40 outline-none font-medium leading-relaxed shadow-3xl transition-all"
-                          value={formData.system_prompt}
-                          onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                        <label className="block text-sm font-medium text-[#8a99a8] ml-1">Agent Name</label>
+                        <input
+                          type="text"
+                          value={formData.agent_name}
+                          onChange={(e) => setFormData({ ...formData, agent_name: e.target.value })}
+                          className="w-full bg-[#05080a] border border-[#1a2126] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#5e9cb9] transition-all placeholder-[#1a2126]"
+                          placeholder="e.g. Sales Assistant"
                         />
                       </div>
 
-                      <div className="space-y-8 pb-10">
-                        <div className="flex items-center justify-between bg-[#0b1114] p-6 rounded-[24px] border border-[#1a2126] shadow-2xl">
-                          <div className="space-y-1">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-white">Conversational Matrix</h3>
-                            <p className="text-[9px] text-[#8a99a8] font-black uppercase tracking-widest">Define automated logic sequences</p>
-                          </div>
-                          <button onClick={() => setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: [...formData.configuration.flow_steps, { id: Date.now().toString(), name: 'NEW_STEP', content: '' }] } })} className="px-6 py-3 bg-[#5e9cb9] text-white rounded-xl text-[9px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-[#5e9cb9]/40 hover:scale-105 transition-all">Add Logic Vector</button>
+                      <div className="space-y-4">
+                        <label className="block text-sm font-medium text-[#8a99a8] ml-1">System Prompt (The Brain)</label>
+                        <textarea
+                          className="w-full h-48 bg-[#05080a] border border-[#1a2126] rounded-xl p-4 text-white focus:outline-none focus:border-[#5e9cb9] transition-all custom-scrollbar resize-none placeholder-[#1a2126] leading-relaxed"
+                          value={formData.system_prompt}
+                          onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                          placeholder="You are a helpful AI assistant. Your goal is to..."
+                        />
+                        <p className="text-xs text-[#8a99a8]/50 ml-1">Example: "You are a receptionist at a dental clinic. Answer courteously and help book appointments."</p>
+                      </div>
+
+                      <div className="space-y-4 pt-4 border-t border-[#1a2126]">
+                        <div className="flex items-center justify-between">
+                          <label className="block text-sm font-medium text-[#8a99a8] ml-1">Conversation Flow Logic</label>
+                          <button
+                            onClick={() => setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: [...formData.configuration.flow_steps, { id: Date.now().toString(), name: 'New Step', content: '' }] } })}
+                            className="text-xs text-[#5e9cb9] hover:text-white font-bold uppercase tracking-wider px-3 py-1.5 bg-[#5e9cb9]/10 rounded-lg hover:bg-[#5e9cb9]/20 transition-all border border-[#5e9cb9]/20"
+                          >
+                            + Add Logic Step
+                          </button>
                         </div>
 
-                        <div className="space-y-6 relative">
-                          <div className="absolute left-[30px] top-0 bottom-0 w-[1.5px] bg-gradient-to-b from-[#1a2126] via-[#2d383f] to-[#1a2126] opacity-30"></div>
+                        <div className="space-y-4">
                           {formData.configuration.flow_steps.map((step, idx) => (
-                            <div key={step.id} className="relative z-10 pl-12 group">
-                              <div className="absolute left-6 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-[#05080a] bg-[#1a2126] group-hover:bg-[#5e9cb9] transition-all shadow-xl group-hover:shadow-[0_0_15px_#5e9cb9] duration-500"></div>
-                              <div className="bg-[#0b1114] border border-[#1a2126] rounded-[32px] overflow-hidden hover:border-[#5e9cb9]/30 transition-all shadow-3xl">
-                                <div className="px-8 py-5 flex items-center justify-between border-b border-[#1a2126]/50 bg-[#121a1e]/40">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-8 h-8 bg-[#5e9cb9]/15 rounded-xl flex items-center justify-center text-[#5e9cb9] font-black text-[9px] border border-[#5e9cb9]/20">{String(idx + 1).padStart(2, '0')}</div>
-                                    <input
-                                      className="bg-transparent border-none text-sm font-black text-white focus:ring-0 p-0 w-64 outline-none tracking-tight uppercase"
-                                      value={step.name}
-                                      onChange={(e) => {
-                                        const n = [...formData.configuration.flow_steps]; n[idx].name = e.target.value;
-                                        setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="flex items-center gap-5">
-                                    <button onClick={() => {
-                                      const n = formData.configuration.flow_steps.filter((_, i) => i !== idx);
-                                      setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
-                                    }} className="text-[#8a99a8] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all font-black text-[9px] uppercase tracking-widest">Remove</button>
-                                    <div className="w-[1px] h-5 bg-[#1a2126]"></div>
-                                    <label className="relative inline-flex items-center cursor-pointer">
-                                      <input type="checkbox" className="sr-only peer" defaultChecked />
-                                      <div className="w-9 h-4.5 bg-[#05080a] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_20px_rgba(94,156,185,0.3)] after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-2.5 after:w-2.5 after:transition-all peer-checked:after:translate-x-4.5 shadow-inner"></div>
-                                    </label>
-                                  </div>
-                                </div>
-                                <div className="p-8">
-                                  <textarea
-                                    className="w-full bg-transparent border-none p-0 text-base text-[#8a99a8] focus:ring-0 resize-none h-24 leading-relaxed outline-none font-medium italic placeholder-[#1a2126]"
-                                    placeholder="Define logic behavior..."
-                                    value={step.content}
+                            <div key={step.id} className="bg-[#05080a] border border-[#1a2126] rounded-xl p-4 space-y-3 hover:border-[#5e9cb9]/30 transition-all group">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3 flex-1">
+                                  <span className="text-xs font-mono text-[#5e9cb9] bg-[#5e9cb9]/10 px-2 py-1 rounded border border-[#5e9cb9]/10">{String(idx + 1).padStart(2, '0')}</span>
+                                  <input
+                                    value={step.name}
                                     onChange={(e) => {
-                                      const n = [...formData.configuration.flow_steps]; n[idx].content = e.target.value;
+                                      const n = [...formData.configuration.flow_steps]; n[idx].name = e.target.value;
                                       setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
                                     }}
+                                    className="bg-transparent text-sm font-bold text-white focus:outline-none w-full placeholder-[#1a2126]"
+                                    placeholder="Step Name (e.g. Greeting)"
                                   />
                                 </div>
+                                <button
+                                  onClick={() => {
+                                    const n = formData.configuration.flow_steps.filter((_, i) => i !== idx);
+                                    setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
+                                  }}
+                                  className="text-[#8a99a8] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                >
+                                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                </button>
                               </div>
+                              <textarea
+                                value={step.content}
+                                onChange={(e) => {
+                                  const n = [...formData.configuration.flow_steps]; n[idx].content = e.target.value;
+                                  setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
+                                }}
+                                className="w-full bg-[#0b1114] rounded-lg p-3 text-sm text-white focus:outline-none border border-transparent focus:border-[#1a2126] resize-none h-20 placeholder-[#1a2126]"
+                                placeholder="What should the agent say or check for in this step?"
+                              />
                             </div>
                           ))}
                         </div>
