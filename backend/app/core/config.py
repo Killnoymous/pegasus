@@ -26,6 +26,8 @@ class Settings(BaseSettings):
 
     # AI Services
     GEMINI_API_KEY: str | None = None
+    OPENAI_API_KEY: str | None = None
+    ELEVENLABS_API_KEY: str | None = None
 
     
     class Config:

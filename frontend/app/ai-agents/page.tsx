@@ -134,11 +134,81 @@ export default function AIAgentsPage() {
     { role: 'assistant', text: "I'm monitoring your configuration. Your current prompt setup is optimized for low-latency responses." }
   ])
 
+  const [isLive, setIsLive] = useState(false)
+  const [isDeploying, setIsDeploying] = useState(false)
+  const [socket, setSocket] = useState<WebSocket | null>(null)
+  const audioContext = React.useRef<AudioContext | null>(null)
+  const mediaRecorder = React.useRef<MediaRecorder | null>(null)
+
+  const handleLiveLink = async () => {
+    if (isLive) {
+      socket?.close()
+      mediaRecorder.current?.stop()
+      setIsLive(false)
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000'
+      const ws = new WebSocket(`${wsUrl}/api/v1/ws/agent/${formData.id}`)
+      ws.binaryType = 'arraybuffer'
+
+      ws.onopen = () => {
+        setIsLive(true)
+        console.log('Voice Uplink Active')
+
+        // Start recording and streaming chunks
+        mediaRecorder.current = new MediaRecorder(stream)
+        mediaRecorder.current.ondataavailable = (event) => {
+          if (event.data.size > 0 && ws.readyState === WebSocket.OPEN) {
+            ws.send(event.data)
+          }
+        }
+        mediaRecorder.current.start(1000) // Stream in 1-second chunks
+      }
+
+      ws.onmessage = async (event) => {
+        if (typeof event.data === 'string') {
+          const msg = JSON.parse(event.data)
+          if (msg.type === 'transcript') {
+            setHelperMessages(prev => [...prev, { role: msg.role, text: msg.text }])
+          }
+        } else {
+          playAudioChunk(event.data)
+        }
+      }
+
+      ws.onclose = () => {
+        setIsLive(false)
+        mediaRecorder.current?.stop()
+      }
+      setSocket(ws)
+    } catch (err) {
+      console.error('Microphone access denied', err)
+      alert('Please allow microphone access to test the agent.')
+    }
+  }
+
+  const playAudioChunk = async (data: ArrayBuffer) => {
+    try {
+      if (!audioContext.current) audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const buffer = await audioContext.current.decodeAudioData(data)
+      const source = audioContext.current.createBufferSource()
+      source.buffer = buffer
+      source.connect(audioContext.current.destination)
+      source.start()
+    } catch (e) {
+      console.error('Audio playback error', e)
+    }
+  }
+
   useEffect(() => {
     if (showConfigModal) {
       document.body.style.overflow = 'hidden'
     } else {
       document.body.style.overflow = 'unset'
+      socket?.close()
     }
   }, [showConfigModal])
 
@@ -214,6 +284,7 @@ export default function AIAgentsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    setIsDeploying(true)
 
     try {
       const payload = {
@@ -231,10 +302,15 @@ export default function AIAgentsPage() {
         await apiClient.post('/ai-agents', payload)
       }
 
-      setShowConfigModal(false)
-      fetchAgents()
+      // Simulation for SaaS "Deployment" feel
+      setTimeout(() => {
+        setIsDeploying(false)
+        setShowConfigModal(false)
+        fetchAgents()
+      }, 1500)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to save AI agent')
+      setError(err.response?.data?.detail || 'Deployment failed. Check infrastructure status.')
+      setIsDeploying(false)
     }
   }
 
@@ -563,10 +639,11 @@ export default function AIAgentsPage() {
 
                 {/* Sub Navigation (Horizontal) */}
                 <div className="px-10 bg-[#0b1114] border-b border-[#1a2126] flex gap-8">
-                  {['DETAILS', 'STYLING', 'KNOWLEDGE', 'CHANNELS', 'POST-CALL', 'PLAYGROUND'].map((label) => {
+                  {['DETAILS', 'STYLING', 'KNOWLEDGE', 'CHANNELS', 'POST-CALL', 'PLAYGROUND', 'GUIDE'].map((label) => {
                     const tabMap: Record<string, string> = {
                       'DETAILS': 'details', 'STYLING': 'settings', 'KNOWLEDGE': 'knowledge_base',
-                      'CHANNELS': 'integrations', 'POST-CALL': 'post-call', 'PLAYGROUND': 'test'
+                      'CHANNELS': 'integrations', 'POST-CALL': 'post-call', 'PLAYGROUND': 'test',
+                      'GUIDE': 'guide'
                     };
                     const tab = tabMap[label];
                     const isActive = activeTab === tab;
@@ -816,22 +893,80 @@ export default function AIAgentsPage() {
                         </div>
                       </div>
                       <div className="text-center space-y-6">
-                        <h3 className="text-4xl font-black text-white tracking-tighter uppercase font-heading">Initialization Ready</h3>
-                        <p className="text-[#8a99a8] text-sm max-w-lg font-black uppercase tracking-[0.2em] leading-loose">Secure web-socket link is active. <br />Awaiting biometric voice trigger.</p>
+                        <h3 className="text-4xl font-black text-white tracking-tighter uppercase font-heading">
+                          {isLive ? 'SYSTEM ONLINE' : 'Initialization Ready'}
+                        </h3>
+                        <p className="text-[#8a99a8] text-sm max-w-lg font-black uppercase tracking-[0.2em] leading-loose">
+                          {isLive ? 'Voice uplink established. Speaking allowed.' : 'Secure web-socket link is active. Awaiting biometric voice trigger.'}
+                        </p>
                       </div>
                       <div className="flex gap-10">
-                        <button className="px-16 py-6 bg-[#5e9cb9] text-white rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] shadow-[0_20px_60px_rgba(94,156,185,0.4)] hover:scale-105 transition-all active:scale-95">Open Live Link</button>
+                        <button
+                          onClick={handleLiveLink}
+                          className={`px-16 py-6 ${isLive ? 'bg-red-500 shadow-[0_20px_60px_rgba(239,68,68,0.4)]' : 'bg-[#5e9cb9] shadow-[0_20px_60px_rgba(94,156,185,0.4)]'} text-white rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95`}
+                        >
+                          {isLive ? 'Terminate Link' : 'Open Live Link'}
+                        </button>
                         <button className="px-16 py-6 bg-[#1a2126] text-[#8a99a8] rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] border border-[#2d383f] hover:text-white transition-all">Preview Mobile</button>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Sticky Footer */}
-                <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
-                  <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Discard Changes</button>
-                  <button onClick={handleSubmit} className="px-12 py-4 bg-[#5e9cb9] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8] transition-all transform active:scale-95">Deploy System Core</button>
-                </div>
+                {/* 7. Guide Tab */}
+                {activeTab === 'guide' && (
+                  <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
+                    <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl">
+                      <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 font-heading">Self-Hosted SaaS Infrastructure</h3>
+                      <div className="grid grid-cols-2 gap-10">
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">1. No External Frameworks</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">System is built using 100% custom orchestration logic. No LangChain or AutoGPT dependencies, ensuring maximum speed and lower costs.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">2. Direct Voice Uplink</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">Browser streaming sends audio directly to the edge-optimized brain core via WebSockets for sub-second latency.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">3. Memory Persistence</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">User preferences and conversation history are managed locally, providing a persistent 'brain' for every user without extra costs.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">4. Scale-Ready Backend</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">The Node/Python core handles concurrent sessions, making it ready to be white-labeled and sold as a global service.</p>
+                        </div>
+                      </div>
+                      <div className="mt-16 p-8 bg-[#05080a] rounded-[32px] border border-[#1a2126]">
+                        <div className="flex items-center gap-6">
+                          <div className="w-12 h-12 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9]">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-[10px] font-black text-white uppercase tracking-widest">Administrator Tip</div>
+                            <div className="text-[9px] text-[#8a99a8] uppercase font-black tracking-widest">Use the 'Playground' tab to test real-time voice interaction before deploying to production.</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Sticky Footer */}
+              <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
+                <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Discard Entities</button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isDeploying}
+                  className={`px-12 py-4 ${isDeploying ? 'bg-[#1a2126] text-[#8a99a8]' : 'bg-[#5e9cb9] text-white shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8]'} rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all transform active:scale-95 flex items-center gap-3`}
+                >
+                  {isDeploying ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
+                      Deploying System Core...
+                    </>
+                  ) : 'Deploy System Core'}
+                </button>
               </div>
             </div>
           </div>

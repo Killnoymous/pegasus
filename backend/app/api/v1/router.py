@@ -3,7 +3,7 @@ Main API Router
 Aggregates all endpoint routers
 """
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, phone_numbers, ai_agents, call_logs, orders, dashboard
+from app.api.v1.endpoints import auth, phone_numbers, ai_agents, call_logs, orders, dashboard, agent_ws
 
 api_router = APIRouter()
 
@@ -16,4 +16,5 @@ api_router.include_router(orders.router, prefix="/orders", tags=["Orders"])
 
 from app.api.v1.endpoints import test_ai
 api_router.include_router(test_ai.router, prefix="/test-ai", tags=["Test AI"])
+api_router.include_router(agent_ws.router, tags=["Agent WebSocket"])
 
