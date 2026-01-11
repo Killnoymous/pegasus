@@ -559,107 +559,52 @@ export default function AIAgentsPage() {
         )}
 
         {/* --- Configuration Modal (TRUE FULL SCREEN OVERLAY) --- */}
+        {/* --- Standard Clean Config Modal --- */}
         {showConfigModal && (
-          <div className="fixed inset-0 z-[100] bg-[#05080a] flex flex-col animate-fadeIn overflow-hidden" role="dialog" aria-modal="true">
-            {/* Main Application Container */}
-            <div className="h-full flex flex-row overflow-hidden">
+          <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn" role="dialog" aria-modal="true">
+            <div className="bg-[#0b1114] w-full max-w-5xl h-[85vh] rounded-2xl border border-[#1a2126] shadow-2xl flex flex-col overflow-hidden">
 
-              {/* Sidebar Helper Assistant (Persistent Column) */}
-              <div className="w-[340px] flex-shrink-0 border-r border-[#1a2126] bg-[#0b1114]/50 flex flex-col hidden lg:flex">
-                <div className="p-8 border-b border-[#1a2126] bg-[#0b1114]">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-[#5e9cb9] rounded-full blur-md opacity-40 animate-pulse"></div>
-                      <div className="w-3 h-3 rounded-full bg-[#5e9cb9] relative z-10"></div>
-                    </div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5e9cb9] font-heading">Co-Pilot Assistant</h3>
-                  </div>
+              {/* Std Header */}
+              <div className="px-8 py-5 border-b border-[#1a2126] flex items-center justify-between bg-[#0b1114]">
+                <div>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Configure Agent</h2>
+                  <p className="text-xs text-[#8a99a8] mt-1">Setup your agent's identity and behavior logic.</p>
                 </div>
+                <button
+                  onClick={() => setShowConfigModal(false)}
+                  className="p-2 text-[#8a99a8] hover:text-white hover:bg-[#1a2126] rounded-lg transition-all"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
 
-                {/* Chat History */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                  {helperMessages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[85%] p-5 rounded-[24px] text-[12px] leading-relaxed font-medium shadow-2xl border ${msg.role === 'user'
-                        ? 'bg-[#5e9cb9] text-white border-white/10'
-                        : 'bg-[#121a1e] text-[#8a99a8] border-[#1a2126]'
-                        }`}>
-                        {msg.text}
-                      </div>
-                    </div>
+              {/* Main Content Area */}
+              <div className="flex-1 flex overflow-hidden">
+                {/* Sidemenu */}
+                <div className="w-64 border-r border-[#1a2126] bg-[#05080a] p-4 space-y-2 hidden md:block">
+                  {[
+                    { id: 'details', label: 'General Details', icon: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
+                    { id: 'settings', label: 'Voice & Language', icon: 'M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z' },
+                    { id: 'knowledge_base', label: 'Knowledge Base', icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253' },
+                    { id: 'test', label: 'Test Agent', icon: 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z' },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${activeTab === item.id
+                        ? 'bg-[#5e9cb9]/10 text-[#5e9cb9] border border-[#5e9cb9]/20'
+                        : 'text-[#8a99a8] hover:bg-[#1a2126] hover:text-white'
+                        }`}
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} /></svg>
+                      {item.label}
+                    </button>
                   ))}
                 </div>
 
-                {/* Chat Input */}
-                <div className="p-8 border-t border-[#1a2126] bg-[#0b1114]">
-                  <form onSubmit={handleHelperSend} className="relative group">
-                    <div className="absolute -inset-0.5 bg-gradient-to-r from-[#1a2126] to-[#2d383f] rounded-[20px] opacity-50 group-focus-within:opacity-100 group-focus-within:from-[#5e9cb9]/30 transition-all"></div>
-                    <input
-                      type="text"
-                      placeholder="Ask the co-pilot to refine logic..."
-                      className="relative w-full bg-[#05080a] border border-[#1a2126] rounded-[20px] px-6 py-5 text-xs text-white focus:ring-0 focus:border-[#5e9cb9]/50 outline-none transition-all placeholder-gray-800 font-medium"
-                      value={helperInput}
-                      onChange={(e) => setHelperInput(e.target.value)}
-                    />
-                    <button type="submit" className="absolute right-4 top-4.5 p-1.5 text-[#5e9cb9] hover:scale-125 transition-all">
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
+                {/* Content - Injecting forms here */}
+                <div className="flex-1 overflow-y-auto p-8 bg-[#0b1114]">
 
-              {/* Central Editor Area */}
-              <div className="flex-1 flex flex-col bg-[#05080a] relative overflow-hidden">
-                {/* Immersive Header */}
-                <div className="py-6 px-10 border-b border-[#1a2126] flex items-center justify-between bg-[#0b1114]">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                      <h2 className="text-xl font-black text-white tracking-tighter font-heading uppercase">{formData.agent_name || 'System Identity'}</h2>
-                      <div className="px-2 py-0.5 bg-[#5e9cb9]/10 text-[#5e9cb9] text-[8px] font-black rounded-md border border-[#5e9cb9]/20 uppercase tracking-[0.2em]">Build Core v1.4.0</div>
-                    </div>
-                    <div className="flex items-center gap-5 text-[9px] font-black uppercase tracking-widest">
-                      <span className="flex items-center gap-2 text-green-400">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]"></span> RUNNING_STABLE
-                      </span>
-                      <span className="text-[#8a99a8]">NETWORK: <span className="text-white">EDGESCALE_GLOBAL</span></span>
-                      <span className="text-[#8a99a8]">LLM: <span className="text-white">GPT-4O_TURBO_LATEST</span></span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="bg-[#05080a] p-1 rounded-xl flex border border-[#1a2126] shadow-2xl">
-                      <button onClick={() => setActiveTab('details')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab !== 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Visual Engine</button>
-                      <button onClick={() => setActiveTab('code')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Logic Source</button>
-                    </div>
-                    <button onClick={() => setShowConfigModal(false)} className="w-10 h-10 flex items-center justify-center bg-[#1a2126] rounded-xl text-[#8a99a8] hover:text-white transition-all border border-[#2d383f] hover:border-[#5e9cb9]/50 shadow-2xl">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Sub Navigation (Horizontal) */}
-                <div className="px-10 bg-[#0b1114] border-b border-[#1a2126] flex gap-8">
-                  {['DETAILS', 'STYLING', 'KNOWLEDGE', 'CHANNELS', 'POST-CALL', 'PLAYGROUND', 'GUIDE'].map((label) => {
-                    const tabMap: Record<string, string> = {
-                      'DETAILS': 'details', 'STYLING': 'settings', 'KNOWLEDGE': 'knowledge_base',
-                      'CHANNELS': 'integrations', 'POST-CALL': 'post-call', 'PLAYGROUND': 'test',
-                      'GUIDE': 'guide'
-                    };
-                    const tab = tabMap[label];
-                    const isActive = activeTab === tab;
-                    return (
-                      <button key={label} onClick={() => setActiveTab(tab)} className={`py-4 text-[9px] font-black uppercase tracking-[0.2em] transition-all relative ${isActive ? 'text-[#5e9cb9]' : 'text-[#8a99a8] hover:text-white'}`}>
-                        {label}
-                        {isActive && <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#5e9cb9] shadow-[0_0_20px_#5e9cb9]"></div>}
-                      </button>
-                    )
-                  })}
-                </div>
-
-                {/* Main Content Area */}
-                <div className="flex-1 overflow-y-auto p-12 custom-scrollbar space-y-16">
-                  {/* Tabs Content Injection Point */}
-                  {/* 1. Details Tab */}
                   {activeTab === 'details' && (
                     <div className="max-w-3xl space-y-8 animate-fadeIn">
                       <div className="space-y-4">
@@ -737,225 +682,473 @@ export default function AIAgentsPage() {
                     </div>
                   )}
 
-                  {/* 2. Settings Tab */}
-                  {/* 2. Settings Tab */}
                   {activeTab === 'settings' && (
-                    <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-20">
-                      <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-[0_0_100px_rgba(0,0,0,0.5)] relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5e9cb9]/50 to-transparent"></div>
-                        <h3 className="text-sm font-black text-white uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 underline decoration-[#5e9cb9]/30 underline-offset-8 font-heading">Neural Tuning</h3>
-                        <div className="space-y-10">
-                          {[
-                            { t: 'Ambient Atmosphere', d: 'Synthetic background noise for hyper-realism.' },
-                            { t: 'Enterprise Archiving', d: 'Military-grade encryption for call logging.' },
-                            { t: 'Humanoid Filler Logic', d: 'Ultra-low latency verbal pauses and fillers.' }
-                          ].map(item => (
-                            <div key={item.t} className="flex items-center justify-between p-10 bg-[#05080a] rounded-[32px] border border-[#1a2126] hover:border-[#5e9cb9]/30 transition-all group scale-100 hover:scale-[1.02]">
-                              <div className="space-y-2">
-                                <div className="text-base font-black text-white tracking-tight">{item.t}</div>
-                                <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.2em]">{item.d}</div>
-                              </div>
-                              <label className="relative inline-flex items-center cursor-pointer scale-125">
-                                <input type="checkbox" className="sr-only peer" defaultChecked={item.t.includes('Archive')} />
-                                <div className="w-14 h-7 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_25px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[7px] after:left-[7px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-7 shadow-inner"></div>
-                              </label>
-                            </div>
-                          ))}
+                    <div className="max-w-3xl space-y-8 animate-fadeIn">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <label className="block text-sm font-medium text-[#8a99a8]">Language</label>
+                          <select
+                            value={formData.language}
+                            onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                            className="w-full bg-[#05080a] border border-[#1a2126] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#5e9cb9] appearance-none"
+                          >
+                            <option value="en">English (US)</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="hi">Hindi</option>
+                          </select>
+                        </div>
+                        <div className="space-y-4">
+                          <label className="block text-sm font-medium text-[#8a99a8]">Voice Model</label>
+                          <select
+                            value={formData.voice_name}
+                            onChange={(e) => setFormData({ ...formData, voice_name: e.target.value })}
+                            className="w-full bg-[#05080a] border border-[#1a2126] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#5e9cb9] appearance-none"
+                          >
+                            <option value="en-US-AriaNeural">Aria (Create Female)</option>
+                            <option value="en-US-GuyNeural">Guy (Professional Male)</option>
+                            <option value="en-US-JennyNeural">Jenny (Friendly Female)</option>
+                            <option value="en-GB-RyanNeural">Ryan (Sassy British)</option>
+                          </select>
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* 3. Knowledge Base Tab */}
                   {activeTab === 'knowledge_base' && (
-                    <div className="max-w-6xl mx-auto space-y-12 animate-fadeIn pb-20">
-                      <div className="grid grid-cols-2 gap-10">
-                        <div className="bg-[#121a1e]/60 p-16 rounded-[60px] border border-[#1a2126] flex flex-col items-center justify-center text-center space-y-10 hover:border-[#5e9cb9]/40 transition-all cursor-pointer group shadow-3xl">
-                          <div className="w-24 h-24 bg-[#5e9cb9]/15 rounded-[32px] flex items-center justify-center text-[#5e9cb9] group-hover:scale-110 group-hover:bg-[#5e9cb9]/20 transition-all shadow-inner border border-[#5e9cb9]/20">
-                            <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="text-xl font-black text-white uppercase tracking-tighter">Synthetic Uplink</div>
-                            <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.3em]">PDF, TXT, DOCX ENGINE</div>
-                          </div>
-                        </div>
-                        <div className="bg-[#121a1e]/60 p-16 rounded-[60px] border border-[#1a2126] flex flex-col items-center justify-center text-center space-y-10 hover:border-[#5e9cb9]/40 transition-all cursor-pointer group shadow-3xl">
-                          <div className="w-24 h-24 bg-[#5e9cb9]/15 rounded-[32px] flex items-center justify-center text-[#5e9cb9] group-hover:scale-110 group-hover:bg-[#5e9cb9]/20 transition-all shadow-inner border border-[#5e9cb9]/20">
-                            <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-                          </div>
-                          <div className="space-y-2">
-                            <div className="text-xl font-black text-white uppercase tracking-tighter">Web Ingress</div>
-                            <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.3em]">AUTO-SCRAPE & SYNC</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-[#05080a] p-16 rounded-[60px] border border-[#1a2126] shadow-inner relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-[#5e9cb9]/5 rounded-full blur-[120px]"></div>
-                        <div className="flex items-center justify-between mb-15 relative">
-                          <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-[#5e9cb9] font-heading">Neural Context Matrix</h3>
-                          <div className="flex items-center gap-6">
-                            <span className="text-[10px] font-black text-[#5e9cb9] uppercase tracking-widest bg-[#5e9cb9]/10 px-6 py-2 rounded-full border border-[#5e9cb9]/20">0.4 MB / 100 MB</span>
-                          </div>
-                        </div>
-                        <div className="space-y-6 relative">
-                          <div className="p-10 bg-[#0b1114] rounded-[32px] border border-[#1a2126] flex items-center justify-between group hover:border-[#5e9cb9]/30 transition-all shadow-3xl">
-                            <div className="flex items-center gap-10">
-                              <div className="w-16 h-16 bg-[#5e9cb9]/10 rounded-[20px] flex items-center justify-center text-[#5e9cb9] font-black text-xs border border-[#5e9cb9]/20">DAT</div>
-                              <div className="space-y-1">
-                                <div className="text-base font-black text-white tracking-tight">Core_Logic_Architecture.pdf</div>
-                                <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.2em]">SYNCED IN_VECTOR_EDGE</div>
-                              </div>
-                            </div>
-                            <button className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100">De-link</button>
-                          </div>
-                        </div>
-                      </div>
+                    <div className="max-w-3xl flex flex-col items-center justify-center py-20 animate-fadeIn text-center space-y-4 opacity-50">
+                      <svg className="w-16 h-16 text-[#1a2126]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                      <p className="text-[#8a99a8]">Knowledge Base features are coming soon.</p>
                     </div>
                   )}
 
-                  {/* 4. Connectivity Tab */}
-                  {activeTab === 'integrations' && (
-                    <div className="max-w-4xl mx-auto space-y-10 animate-fadeIn pb-32">
-                      {[
-                        { n: 'NEXUS_VOICE', s: 'STABLE', i: '📞', p: 'TELEPHONY' },
-                        { n: 'CORTEX_GEN_4', s: 'ACTIVE', i: '🧠', p: 'NEURAL' },
-                        { n: 'WEBHOOK_EDGE', s: 'WAITING', i: '🪝', p: 'WORKFLOW' }
-                      ].map((int) => (
-                        <div key={int.n} className="p-12 bg-[#0b1114] rounded-[50px] border border-[#1a2126] flex items-center justify-between hover:border-[#5e9cb9]/30 transition-all group shadow-3xl">
-                          <div className="flex items-center gap-10">
-                            <div className="w-24 h-24 bg-[#05080a] rounded-[32px] flex items-center justify-center text-4xl shadow-inner border border-[#1a2126] group-hover:border-[#5e9cb9]/20 transition-all">{int.i}</div>
-                            <div className="space-y-2">
-                              <div className="text-[11px] font-black uppercase tracking-[0.4em] text-[#5e9cb9]">{int.p}</div>
-                              <div className="text-2xl font-black text-white tracking-tighter uppercase font-heading">{int.n}</div>
-                              <div className="flex items-center gap-4">
-                                <div className={`w-2 h-2 rounded-full ${int.s === 'STABLE' || int.s === 'ACTIVE' ? 'bg-green-400 shadow-[0_0_12px_#4ade80]' : 'bg-yellow-400 animate-pulse shadow-[0_0_12px_#facc15]'}`}></div>
-                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8a99a8]">{int.s}_STATUS</span>
-                              </div>
-                            </div>
-                          </div>
-                          <button className="px-12 py-5 bg-[#05080a] text-white rounded-[24px] text-[11px] font-black border border-[#1a2126] hover:border-[#5e9cb9]/50 transition-all uppercase tracking-[0.3em] shadow-2xl">Re-auth Node</button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* 5. Post-Call Analysis Tab */}
-                  {activeTab === 'post-call' && (
-                    <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
-                      <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5e9cb9]/50 to-transparent"></div>
-                        <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-15 border-l-8 border-[#5e9cb9] pl-10 font-heading">Data Extraction Engine</h3>
-                        <div className="space-y-10">
-                          {[
-                            { l: 'Bullet Summary', d: 'Automated high-fidelity recap of call objectives.' },
-                            { l: 'Sentiment Analysis', d: 'Neural detection of caller emotional trajectory.' },
-                            { l: 'Deep Entity Extraction', d: 'Capture names, phones, and metadata vectors.' }
-                          ].map((action) => (
-                            <div key={action.l} className="flex items-center justify-between p-10 bg-[#05080a] rounded-[32px] border border-[#1a2126] hover:border-[#5e9cb9]/30 transition-all group cursor-pointer">
-                              <div className="space-y-3">
-                                <div className="text-base font-black text-white tracking-tight uppercase">{action.l}</div>
-                                <div className="text-xs text-[#8a99a8] font-black uppercase tracking-widest leading-relaxed max-w-md">{action.d}</div>
-                              </div>
-                              <label className="relative inline-flex items-center cursor-pointer scale-110">
-                                <input type="checkbox" className="sr-only peer" defaultChecked />
-                                <div className="w-14 h-7 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_25px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[7px] after:left-[7px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-7 shadow-inner"></div>
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 6. Test Tab */}
                   {activeTab === 'test' && (
-                    <div className="h-full flex flex-col items-center justify-center space-y-16 animate-fadeIn pb-32">
-                      <div className="relative scale-125">
-                        <div className="absolute inset-x-0 -inset-y-20 bg-[#5e9cb9] rounded-full blur-[150px] opacity-10 animate-pulse"></div>
-                        <div className="w-56 h-56 bg-[#0b1114] border-8 border-[#1a2126] rounded-full flex items-center justify-center relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] border-t-[#5e9cb9]/30">
-                          <svg className="w-24 h-24 text-[#5e9cb9]" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"></path></svg>
-                        </div>
-                      </div>
-                      <div className="text-center space-y-6">
-                        <h3 className="text-4xl font-black text-white tracking-tighter uppercase font-heading">
-                          {isLive ? 'SYSTEM ONLINE' : 'Initialization Ready'}
-                        </h3>
-                        <p className="text-[#8a99a8] text-sm max-w-lg font-black uppercase tracking-[0.2em] leading-loose">
-                          {isLive ? 'Voice uplink established. Speaking allowed.' : 'Secure web-socket link is active. Awaiting biometric voice trigger.'}
-                        </p>
-                      </div>
-                      <div className="flex gap-10">
-                        <button
-                          onClick={handleLiveLink}
-                          className={`px-16 py-6 ${isLive ? 'bg-red-500 shadow-[0_20px_60px_rgba(239,68,68,0.4)]' : 'bg-[#5e9cb9] shadow-[0_20px_60px_rgba(94,156,185,0.4)]'} text-white rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95`}
-                        >
-                          {isLive ? 'Terminate Link' : 'Open Live Link'}
-                        </button>
-                        <button className="px-16 py-6 bg-[#1a2126] text-[#8a99a8] rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] border border-[#2d383f] hover:text-white transition-all">Preview Mobile</button>
+                    <div className="max-w-3xl h-full flex flex-col animate-fadeIn">
+                      <div className="flex-1 bg-[#05080a] rounded-2xl border border-[#1a2126] flex items-center justify-center flex-col space-y-4">
+                        <p className="text-[#8a99a8]">Test your agent logic here.</p>
+                        <div className="px-6 py-2 bg-[#1a2126] rounded-full text-xs text-white">Save agent to enable testing</div>
                       </div>
                     </div>
                   )}
-                </div>
 
-                {/* 7. Guide Tab */}
-                {activeTab === 'guide' && (
-                  <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
-                    <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl">
-                      <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 font-heading">Self-Hosted SaaS Infrastructure</h3>
-                      <div className="grid grid-cols-2 gap-10">
-                        <div className="space-y-6">
-                          <div className="text-xs font-black text-white uppercase tracking-widest">1. No External Frameworks</div>
-                          <p className="text-xs text-[#8a99a8] leading-relaxed">System is built using 100% custom orchestration logic. No LangChain or AutoGPT dependencies, ensuring maximum speed and lower costs.</p>
-                        </div>
-                        <div className="space-y-6">
-                          <div className="text-xs font-black text-white uppercase tracking-widest">2. Direct Voice Uplink</div>
-                          <p className="text-xs text-[#8a99a8] leading-relaxed">Browser streaming sends audio directly to the edge-optimized brain core via WebSockets for sub-second latency.</p>
-                        </div>
-                        <div className="space-y-6">
-                          <div className="text-xs font-black text-white uppercase tracking-widest">3. Memory Persistence</div>
-                          <p className="text-xs text-[#8a99a8] leading-relaxed">User preferences and conversation history are managed locally, providing a persistent 'brain' for every user without extra costs.</p>
-                        </div>
-                        <div className="space-y-6">
-                          <div className="text-xs font-black text-white uppercase tracking-widest">4. Scale-Ready Backend</div>
-                          <p className="text-xs text-[#8a99a8] leading-relaxed">The Node/Python core handles concurrent sessions, making it ready to be white-labeled and sold as a global service.</p>
+                  {/* Old content hidden or repurposed below */}
+                  <div className="hidden">
+
+                    {/* Sidebar Helper Assistant (Persistent Column) */}
+                    <div className="w-[340px] flex-shrink-0 border-r border-[#1a2126] bg-[#0b1114]/50 flex flex-col hidden lg:flex">
+                      <div className="p-8 border-b border-[#1a2126] bg-[#0b1114]">
+                        <div className="flex items-center gap-4">
+                          <div className="relative">
+                            <div className="absolute inset-0 bg-[#5e9cb9] rounded-full blur-md opacity-40 animate-pulse"></div>
+                            <div className="w-3 h-3 rounded-full bg-[#5e9cb9] relative z-10"></div>
+                          </div>
+                          <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-[#5e9cb9] font-heading">Co-Pilot Assistant</h3>
                         </div>
                       </div>
-                      <div className="mt-16 p-8 bg-[#05080a] rounded-[32px] border border-[#1a2126]">
-                        <div className="flex items-center gap-6">
-                          <div className="w-12 h-12 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9]">
-                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+
+                      {/* Chat History */}
+                      <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                        {helperMessages.map((msg, i) => (
+                          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-[85%] p-5 rounded-[24px] text-[12px] leading-relaxed font-medium shadow-2xl border ${msg.role === 'user'
+                              ? 'bg-[#5e9cb9] text-white border-white/10'
+                              : 'bg-[#121a1e] text-[#8a99a8] border-[#1a2126]'
+                              }`}>
+                              {msg.text}
+                            </div>
                           </div>
-                          <div className="space-y-1">
-                            <div className="text-[10px] font-black text-white uppercase tracking-widest">Administrator Tip</div>
-                            <div className="text-[9px] text-[#8a99a8] uppercase font-black tracking-widest">Use the 'Playground' tab to test real-time voice interaction before deploying to production.</div>
-                          </div>
-                        </div>
+                        ))}
+                      </div>
+
+                      {/* Chat Input */}
+                      <div className="p-8 border-t border-[#1a2126] bg-[#0b1114]">
+                        <form onSubmit={handleHelperSend} className="relative group">
+                          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#1a2126] to-[#2d383f] rounded-[20px] opacity-50 group-focus-within:opacity-100 group-focus-within:from-[#5e9cb9]/30 transition-all"></div>
+                          <input
+                            type="text"
+                            placeholder="Ask the co-pilot to refine logic..."
+                            className="relative w-full bg-[#05080a] border border-[#1a2126] rounded-[20px] px-6 py-5 text-xs text-white focus:ring-0 focus:border-[#5e9cb9]/50 outline-none transition-all placeholder-gray-800 font-medium"
+                            value={helperInput}
+                            onChange={(e) => setHelperInput(e.target.value)}
+                          />
+                          <button type="submit" className="absolute right-4 top-4.5 p-1.5 text-[#5e9cb9] hover:scale-125 transition-all">
+                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
+                          </button>
+                        </form>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
 
-              {/* Sticky Footer */}
-              <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
-                <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Cancel</button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={isDeploying}
-                  className={`px-12 py-4 ${isDeploying ? 'bg-[#1a2126] text-[#8a99a8]' : 'bg-[#5e9cb9] text-white shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8]'} rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all transform active:scale-95 flex items-center gap-3`}
-                >
-                  {isDeploying ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
-                      Saving...
-                    </>
-                  ) : 'Save Agent'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                    {/* Central Editor Area */}
+                    <div className="flex-1 flex flex-col bg-[#05080a] relative overflow-hidden">
+                      {/* Immersive Header */}
+                      <div className="py-6 px-10 border-b border-[#1a2126] flex items-center justify-between bg-[#0b1114]">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-3">
+                            <h2 className="text-xl font-black text-white tracking-tighter font-heading uppercase">{formData.agent_name || 'System Identity'}</h2>
+                            <div className="px-2 py-0.5 bg-[#5e9cb9]/10 text-[#5e9cb9] text-[8px] font-black rounded-md border border-[#5e9cb9]/20 uppercase tracking-[0.2em]">Build Core v1.4.0</div>
+                          </div>
+                          <div className="flex items-center gap-5 text-[9px] font-black uppercase tracking-widest">
+                            <span className="flex items-center gap-2 text-green-400">
+                              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_#4ade80]"></span> RUNNING_STABLE
+                            </span>
+                            <span className="text-[#8a99a8]">NETWORK: <span className="text-white">EDGESCALE_GLOBAL</span></span>
+                            <span className="text-[#8a99a8]">LLM: <span className="text-white">GPT-4O_TURBO_LATEST</span></span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4">
+                          <div className="bg-[#05080a] p-1 rounded-xl flex border border-[#1a2126] shadow-2xl">
+                            <button onClick={() => setActiveTab('details')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab !== 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Visual Engine</button>
+                            <button onClick={() => setActiveTab('code')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${activeTab === 'code' ? 'bg-[#5e9cb9] text-white shadow-xl shadow-[#5e9cb9]/20' : 'text-[#8a99a8] hover:text-white'}`}>Logic Source</button>
+                          </div>
+                          <button onClick={() => setShowConfigModal(false)} className="w-10 h-10 flex items-center justify-center bg-[#1a2126] rounded-xl text-[#8a99a8] hover:text-white transition-all border border-[#2d383f] hover:border-[#5e9cb9]/50 shadow-2xl">
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Sub Navigation (Horizontal) */}
+                      <div className="px-10 bg-[#0b1114] border-b border-[#1a2126] flex gap-8">
+                        {['DETAILS', 'STYLING', 'KNOWLEDGE', 'CHANNELS', 'POST-CALL', 'PLAYGROUND', 'GUIDE'].map((label) => {
+                          const tabMap: Record<string, string> = {
+                            'DETAILS': 'details', 'STYLING': 'settings', 'KNOWLEDGE': 'knowledge_base',
+                            'CHANNELS': 'integrations', 'POST-CALL': 'post-call', 'PLAYGROUND': 'test',
+                            'GUIDE': 'guide'
+                          };
+                          const tab = tabMap[label];
+                          const isActive = activeTab === tab;
+                          return (
+                            <button key={label} onClick={() => setActiveTab(tab)} className={`py-4 text-[9px] font-black uppercase tracking-[0.2em] transition-all relative ${isActive ? 'text-[#5e9cb9]' : 'text-[#8a99a8] hover:text-white'}`}>
+                              {label}
+                              {isActive && <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#5e9cb9] shadow-[0_0_20px_#5e9cb9]"></div>}
+                            </button>
+                          )
+                        })}
+                      </div>
+
+                      {/* Main Content Area */}
+                      <div className="flex-1 overflow-y-auto p-12 custom-scrollbar space-y-16">
+                        {/* Tabs Content Injection Point */}
+                        {/* 1. Details Tab */}
+                        {activeTab === 'details' && (
+                          <div className="max-w-3xl space-y-8 animate-fadeIn">
+                            <div className="space-y-4">
+                              <label className="block text-sm font-medium text-[#8a99a8] ml-1">Agent Name</label>
+                              <input
+                                type="text"
+                                value={formData.agent_name}
+                                onChange={(e) => setFormData({ ...formData, agent_name: e.target.value })}
+                                className="w-full bg-[#05080a] border border-[#1a2126] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#5e9cb9] transition-all placeholder-[#1a2126]"
+                                placeholder="e.g. Sales Assistant"
+                              />
+                            </div>
+
+                            <div className="space-y-4">
+                              <label className="block text-sm font-medium text-[#8a99a8] ml-1">System Prompt (The Brain)</label>
+                              <textarea
+                                className="w-full h-48 bg-[#05080a] border border-[#1a2126] rounded-xl p-4 text-white focus:outline-none focus:border-[#5e9cb9] transition-all custom-scrollbar resize-none placeholder-[#1a2126] leading-relaxed"
+                                value={formData.system_prompt}
+                                onChange={(e) => setFormData({ ...formData, system_prompt: e.target.value })}
+                                placeholder="You are a helpful AI assistant. Your goal is to..."
+                              />
+                              <p className="text-xs text-[#8a99a8]/50 ml-1">Example: "You are a receptionist at a dental clinic. Answer courteously and help book appointments."</p>
+                            </div>
+
+                            <div className="space-y-4 pt-4 border-t border-[#1a2126]">
+                              <div className="flex items-center justify-between">
+                                <label className="block text-sm font-medium text-[#8a99a8] ml-1">Conversation Flow Logic</label>
+                                <button
+                                  onClick={() => setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: [...formData.configuration.flow_steps, { id: Date.now().toString(), name: 'New Step', content: '' }] } })}
+                                  className="text-xs text-[#5e9cb9] hover:text-white font-bold uppercase tracking-wider px-3 py-1.5 bg-[#5e9cb9]/10 rounded-lg hover:bg-[#5e9cb9]/20 transition-all border border-[#5e9cb9]/20"
+                                >
+                                  + Add Logic Step
+                                </button>
+                              </div>
+
+                              <div className="space-y-4">
+                                {formData.configuration.flow_steps.map((step, idx) => (
+                                  <div key={step.id} className="bg-[#05080a] border border-[#1a2126] rounded-xl p-4 space-y-3 hover:border-[#5e9cb9]/30 transition-all group">
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-3 flex-1">
+                                        <span className="text-xs font-mono text-[#5e9cb9] bg-[#5e9cb9]/10 px-2 py-1 rounded border border-[#5e9cb9]/10">{String(idx + 1).padStart(2, '0')}</span>
+                                        <input
+                                          value={step.name}
+                                          onChange={(e) => {
+                                            const n = [...formData.configuration.flow_steps]; n[idx].name = e.target.value;
+                                            setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
+                                          }}
+                                          className="bg-transparent text-sm font-bold text-white focus:outline-none w-full placeholder-[#1a2126]"
+                                          placeholder="Step Name (e.g. Greeting)"
+                                        />
+                                      </div>
+                                      <button
+                                        onClick={() => {
+                                          const n = formData.configuration.flow_steps.filter((_, i) => i !== idx);
+                                          setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
+                                        }}
+                                        className="text-[#8a99a8] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                      </button>
+                                    </div>
+                                    <textarea
+                                      value={step.content}
+                                      onChange={(e) => {
+                                        const n = [...formData.configuration.flow_steps]; n[idx].content = e.target.value;
+                                        setFormData({ ...formData, configuration: { ...formData.configuration, flow_steps: n } });
+                                      }}
+                                      className="w-full bg-[#0b1114] rounded-lg p-3 text-sm text-white focus:outline-none border border-transparent focus:border-[#1a2126] resize-none h-20 placeholder-[#1a2126]"
+                                      placeholder="What should the agent say or check for in this step?"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 2. Settings Tab */}
+                        {/* 2. Settings Tab */}
+                        {activeTab === 'settings' && (
+                          <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-20">
+                            <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-[0_0_100px_rgba(0,0,0,0.5)] relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5e9cb9]/50 to-transparent"></div>
+                              <h3 className="text-sm font-black text-white uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 underline decoration-[#5e9cb9]/30 underline-offset-8 font-heading">Neural Tuning</h3>
+                              <div className="space-y-10">
+                                {[
+                                  { t: 'Ambient Atmosphere', d: 'Synthetic background noise for hyper-realism.' },
+                                  { t: 'Enterprise Archiving', d: 'Military-grade encryption for call logging.' },
+                                  { t: 'Humanoid Filler Logic', d: 'Ultra-low latency verbal pauses and fillers.' }
+                                ].map(item => (
+                                  <div key={item.t} className="flex items-center justify-between p-10 bg-[#05080a] rounded-[32px] border border-[#1a2126] hover:border-[#5e9cb9]/30 transition-all group scale-100 hover:scale-[1.02]">
+                                    <div className="space-y-2">
+                                      <div className="text-base font-black text-white tracking-tight">{item.t}</div>
+                                      <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.2em]">{item.d}</div>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer scale-125">
+                                      <input type="checkbox" className="sr-only peer" defaultChecked={item.t.includes('Archive')} />
+                                      <div className="w-14 h-7 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_25px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[7px] after:left-[7px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-7 shadow-inner"></div>
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 3. Knowledge Base Tab */}
+                        {activeTab === 'knowledge_base' && (
+                          <div className="max-w-6xl mx-auto space-y-12 animate-fadeIn pb-20">
+                            <div className="grid grid-cols-2 gap-10">
+                              <div className="bg-[#121a1e]/60 p-16 rounded-[60px] border border-[#1a2126] flex flex-col items-center justify-center text-center space-y-10 hover:border-[#5e9cb9]/40 transition-all cursor-pointer group shadow-3xl">
+                                <div className="w-24 h-24 bg-[#5e9cb9]/15 rounded-[32px] flex items-center justify-center text-[#5e9cb9] group-hover:scale-110 group-hover:bg-[#5e9cb9]/20 transition-all shadow-inner border border-[#5e9cb9]/20">
+                                  <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="text-xl font-black text-white uppercase tracking-tighter">Synthetic Uplink</div>
+                                  <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.3em]">PDF, TXT, DOCX ENGINE</div>
+                                </div>
+                              </div>
+                              <div className="bg-[#121a1e]/60 p-16 rounded-[60px] border border-[#1a2126] flex flex-col items-center justify-center text-center space-y-10 hover:border-[#5e9cb9]/40 transition-all cursor-pointer group shadow-3xl">
+                                <div className="w-24 h-24 bg-[#5e9cb9]/15 rounded-[32px] flex items-center justify-center text-[#5e9cb9] group-hover:scale-110 group-hover:bg-[#5e9cb9]/20 transition-all shadow-inner border border-[#5e9cb9]/20">
+                                  <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
+                                </div>
+                                <div className="space-y-2">
+                                  <div className="text-xl font-black text-white uppercase tracking-tighter">Web Ingress</div>
+                                  <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.3em]">AUTO-SCRAPE & SYNC</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="bg-[#05080a] p-16 rounded-[60px] border border-[#1a2126] shadow-inner relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-96 h-96 bg-[#5e9cb9]/5 rounded-full blur-[120px]"></div>
+                              <div className="flex items-center justify-between mb-15 relative">
+                                <h3 className="text-[12px] font-black uppercase tracking-[0.4em] text-[#5e9cb9] font-heading">Neural Context Matrix</h3>
+                                <div className="flex items-center gap-6">
+                                  <span className="text-[10px] font-black text-[#5e9cb9] uppercase tracking-widest bg-[#5e9cb9]/10 px-6 py-2 rounded-full border border-[#5e9cb9]/20">0.4 MB / 100 MB</span>
+                                </div>
+                              </div>
+                              <div className="space-y-6 relative">
+                                <div className="p-10 bg-[#0b1114] rounded-[32px] border border-[#1a2126] flex items-center justify-between group hover:border-[#5e9cb9]/30 transition-all shadow-3xl">
+                                  <div className="flex items-center gap-10">
+                                    <div className="w-16 h-16 bg-[#5e9cb9]/10 rounded-[20px] flex items-center justify-center text-[#5e9cb9] font-black text-xs border border-[#5e9cb9]/20">DAT</div>
+                                    <div className="space-y-1">
+                                      <div className="text-base font-black text-white tracking-tight">Core_Logic_Architecture.pdf</div>
+                                      <div className="text-[10px] text-[#8a99a8] font-black uppercase tracking-[0.2em]">SYNCED IN_VECTOR_EDGE</div>
+                                    </div>
+                                  </div>
+                                  <button className="px-8 py-3 text-[10px] font-black uppercase tracking-[0.3em] text-red-500 hover:bg-red-500/10 rounded-xl transition-all opacity-0 group-hover:opacity-100">De-link</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 4. Connectivity Tab */}
+                        {activeTab === 'integrations' && (
+                          <div className="max-w-4xl mx-auto space-y-10 animate-fadeIn pb-32">
+                            {[
+                              { n: 'NEXUS_VOICE', s: 'STABLE', i: '📞', p: 'TELEPHONY' },
+                              { n: 'CORTEX_GEN_4', s: 'ACTIVE', i: '🧠', p: 'NEURAL' },
+                              { n: 'WEBHOOK_EDGE', s: 'WAITING', i: '🪝', p: 'WORKFLOW' }
+                            ].map((int) => (
+                              <div key={int.n} className="p-12 bg-[#0b1114] rounded-[50px] border border-[#1a2126] flex items-center justify-between hover:border-[#5e9cb9]/30 transition-all group shadow-3xl">
+                                <div className="flex items-center gap-10">
+                                  <div className="w-24 h-24 bg-[#05080a] rounded-[32px] flex items-center justify-center text-4xl shadow-inner border border-[#1a2126] group-hover:border-[#5e9cb9]/20 transition-all">{int.i}</div>
+                                  <div className="space-y-2">
+                                    <div className="text-[11px] font-black uppercase tracking-[0.4em] text-[#5e9cb9]">{int.p}</div>
+                                    <div className="text-2xl font-black text-white tracking-tighter uppercase font-heading">{int.n}</div>
+                                    <div className="flex items-center gap-4">
+                                      <div className={`w-2 h-2 rounded-full ${int.s === 'STABLE' || int.s === 'ACTIVE' ? 'bg-green-400 shadow-[0_0_12px_#4ade80]' : 'bg-yellow-400 animate-pulse shadow-[0_0_12px_#facc15]'}`}></div>
+                                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#8a99a8]">{int.s}_STATUS</span>
+                                    </div>
+                                  </div>
+                                </div>
+                                <button className="px-12 py-5 bg-[#05080a] text-white rounded-[24px] text-[11px] font-black border border-[#1a2126] hover:border-[#5e9cb9]/50 transition-all uppercase tracking-[0.3em] shadow-2xl">Re-auth Node</button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* 5. Post-Call Analysis Tab */}
+                        {activeTab === 'post-call' && (
+                          <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
+                            <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl relative overflow-hidden">
+                              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5e9cb9]/50 to-transparent"></div>
+                              <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-15 border-l-8 border-[#5e9cb9] pl-10 font-heading">Data Extraction Engine</h3>
+                              <div className="space-y-10">
+                                {[
+                                  { l: 'Bullet Summary', d: 'Automated high-fidelity recap of call objectives.' },
+                                  { l: 'Sentiment Analysis', d: 'Neural detection of caller emotional trajectory.' },
+                                  { l: 'Deep Entity Extraction', d: 'Capture names, phones, and metadata vectors.' }
+                                ].map((action) => (
+                                  <div key={action.l} className="flex items-center justify-between p-10 bg-[#05080a] rounded-[32px] border border-[#1a2126] hover:border-[#5e9cb9]/30 transition-all group cursor-pointer">
+                                    <div className="space-y-3">
+                                      <div className="text-base font-black text-white tracking-tight uppercase">{action.l}</div>
+                                      <div className="text-xs text-[#8a99a8] font-black uppercase tracking-widest leading-relaxed max-w-md">{action.d}</div>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer scale-110">
+                                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                                      <div className="w-14 h-7 bg-[#1a2126] rounded-full peer peer-checked:bg-[#5e9cb9] transition-all peer-checked:shadow-[0_0_25px_rgba(94,156,185,0.4)] after:content-[''] after:absolute after:top-[7px] after:left-[7px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-7 shadow-inner"></div>
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* 6. Test Tab */}
+                        {activeTab === 'test' && (
+                          <div className="h-full flex flex-col items-center justify-center space-y-16 animate-fadeIn pb-32">
+                            <div className="relative scale-125">
+                              <div className="absolute inset-x-0 -inset-y-20 bg-[#5e9cb9] rounded-full blur-[150px] opacity-10 animate-pulse"></div>
+                              <div className="w-56 h-56 bg-[#0b1114] border-8 border-[#1a2126] rounded-full flex items-center justify-center relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] border-t-[#5e9cb9]/30">
+                                <svg className="w-24 h-24 text-[#5e9cb9]" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"></path></svg>
+                              </div>
+                            </div>
+                            <div className="text-center space-y-6">
+                              <h3 className="text-4xl font-black text-white tracking-tighter uppercase font-heading">
+                                {isLive ? 'SYSTEM ONLINE' : 'Initialization Ready'}
+                              </h3>
+                              <p className="text-[#8a99a8] text-sm max-w-lg font-black uppercase tracking-[0.2em] leading-loose">
+                                {isLive ? 'Voice uplink established. Speaking allowed.' : 'Secure web-socket link is active. Awaiting biometric voice trigger.'}
+                              </p>
+                            </div>
+                            <div className="flex gap-10">
+                              <button
+                                onClick={handleLiveLink}
+                                className={`px-16 py-6 ${isLive ? 'bg-red-500 shadow-[0_20px_60px_rgba(239,68,68,0.4)]' : 'bg-[#5e9cb9] shadow-[0_20px_60px_rgba(94,156,185,0.4)]'} text-white rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95`}
+                              >
+                                {isLive ? 'Terminate Link' : 'Open Live Link'}
+                              </button>
+                              <button className="px-16 py-6 bg-[#1a2126] text-[#8a99a8] rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] border border-[#2d383f] hover:text-white transition-all">Preview Mobile</button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 7. Guide Tab */}
+                      {activeTab === 'guide' && (
+                        <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
+                          <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl">
+                            <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 font-heading">Self-Hosted SaaS Infrastructure</h3>
+                            <div className="grid grid-cols-2 gap-10">
+                              <div className="space-y-6">
+                                <div className="text-xs font-black text-white uppercase tracking-widest">1. No External Frameworks</div>
+                                <p className="text-xs text-[#8a99a8] leading-relaxed">System is built using 100% custom orchestration logic. No LangChain or AutoGPT dependencies, ensuring maximum speed and lower costs.</p>
+                              </div>
+                              <div className="space-y-6">
+                                <div className="text-xs font-black text-white uppercase tracking-widest">2. Direct Voice Uplink</div>
+                                <p className="text-xs text-[#8a99a8] leading-relaxed">Browser streaming sends audio directly to the edge-optimized brain core via WebSockets for sub-second latency.</p>
+                              </div>
+                              <div className="space-y-6">
+                                <div className="text-xs font-black text-white uppercase tracking-widest">3. Memory Persistence</div>
+                                <p className="text-xs text-[#8a99a8] leading-relaxed">User preferences and conversation history are managed locally, providing a persistent 'brain' for every user without extra costs.</p>
+                              </div>
+                              <div className="space-y-6">
+                                <div className="text-xs font-black text-white uppercase tracking-widest">4. Scale-Ready Backend</div>
+                                <p className="text-xs text-[#8a99a8] leading-relaxed">The Node/Python core handles concurrent sessions, making it ready to be white-labeled and sold as a global service.</p>
+                              </div>
+                            </div>
+                            <div className="mt-16 p-8 bg-[#05080a] rounded-[32px] border border-[#1a2126]">
+                              <div className="flex items-center gap-6">
+                                <div className="w-12 h-12 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9]">
+                                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                </div>
+                                <div className="space-y-1">
+                                  <div className="text-[10px] font-black text-white uppercase tracking-widest">Administrator Tip</div>
+                                  <div className="text-[9px] text-[#8a99a8] uppercase font-black tracking-widest">Use the 'Playground' tab to test real-time voice interaction before deploying to production.</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Sticky Footer */}
+                    <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
+                      <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Cancel</button>
+                      <button
+                        onClick={handleSubmit}
+                        disabled={isDeploying}
+                        className={`px-12 py-4 ${isDeploying ? 'bg-[#1a2126] text-[#8a99a8]' : 'bg-[#5e9cb9] text-white shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8]'} rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all transform active:scale-95 flex items-center gap-3`}
+                      >
+                        {isDeploying ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
+                            Saving...
+                          </>
+                        ) : 'Save Agent'}
+                      </button>
+                    </div> {/* End of Sticky Footer (Old) */}
+                  </div> {/* End of Old Main Content */}
+                </div> {/* End of Old Container */}
+              </div> {/* End of hidden div */}
+
+            </div> {/* End of new Content Area */}
+          </div> {/* End of new Flex Container */}
+
+        {/* New Footer */}
+        <div className="px-8 py-5 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-4">
+          <button
+            onClick={() => setShowConfigModal(false)}
+            className="px-6 py-2.5 text-sm font-medium text-[#8a99a8] hover:text-white transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isDeploying}
+            className="px-8 py-2.5 bg-[#5e9cb9] text-white rounded-xl text-sm font-bold shadow-lg shadow-[#5e9cb9]/20 hover:bg-[#4d8aa8] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isDeploying && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
+            {isDeploying ? 'Saving Agent...' : 'Save Agent'}
+          </button>
+        </div>
+
       </div>
-    </Layout>
+    </div>
   )
 }
