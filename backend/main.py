@@ -28,11 +28,18 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# SaaS-Ready CORS: Allowing flexible origins for testing and production
+# SaaS-Ready CORS: Explicitly allowing localhost and vercel origins
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3000",
+    "https://pegasus1.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Temporarily open to fix 400 errors
-    allow_credentials=False, # Credentials must be False for wildcard origins
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
