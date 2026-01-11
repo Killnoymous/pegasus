@@ -954,7 +954,7 @@ export default function AIAgentsPage() {
 
               {/* Sticky Footer */}
               <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
-                <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Discard Entities</button>
+                <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Cancel</button>
                 <button
                   onClick={handleSubmit}
                   disabled={isDeploying}
@@ -963,9 +963,9 @@ export default function AIAgentsPage() {
                   {isDeploying ? (
                     <>
                       <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
-                      Deploying System Core...
+                      Saving...
                     </>
-                  ) : 'Deploy System Core'}
+                  ) : 'Save Agent'}
                 </button>
               </div>
             </div>
