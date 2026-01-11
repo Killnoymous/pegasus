@@ -203,35 +203,6 @@ export default function AIAgentsPage() {
     }
   }
 
-  const handleSendMessage = async () => {
-    if (!helperInput.trim() || !formData.id) return
-
-    const userMessage = helperInput.trim()
-    setHelperInput('')
-
-    // Add user message to chat
-    setHelperMessages(prev => [...prev, { role: 'user', text: userMessage }])
-
-    try {
-      // Call backend AI endpoint
-      const response = await apiClient.post(`/ai-agents/${formData.id}/chat`, {
-        message: userMessage
-      })
-
-      // Add AI response to chat
-      setHelperMessages(prev => [...prev, {
-        role: 'assistant',
-        text: response.data.response || 'No response from agent.'
-      }])
-    } catch (err) {
-      console.error('Chat error:', err)
-      setHelperMessages(prev => [...prev, {
-        role: 'assistant',
-        text: 'Error: Could not connect to agent. Please check your configuration.'
-      }])
-    }
-  }
-
   useEffect(() => {
     if (showConfigModal) {
       document.body.style.overflow = 'hidden'
@@ -912,123 +883,95 @@ export default function AIAgentsPage() {
                     </div>
                   )}
 
-                  {/* 6. Playground Tab - Text Chat */}
+                  {/* 6. Test Tab */}
                   {activeTab === 'test' && (
-                    <div className="h-full flex flex-col animate-fadeIn pb-8">
-                      {/* Chat Messages Area */}
-                      <div className="flex-1 overflow-y-auto space-y-6 mb-8 px-4">
-                        {helperMessages.map((msg, idx) => (
-                          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-[70%] p-6 rounded-3xl ${msg.role === 'user'
-                              ? 'bg-[#5e9cb9] text-white'
-                              : 'bg-[#0b1114] text-white border border-[#1a2126]'
-                              }`}>
-                              <div className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-60">
-                                {msg.role === 'user' ? 'YOU' : 'AGENT'}
-                              </div>
-                              <div className="text-sm leading-relaxed">{msg.text}</div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Input Area */}
-                      <div className="border-t border-[#1a2126] pt-8 px-4">
-                        <div className="flex gap-4">
-                          <input
-                            type="text"
-                            value={helperInput}
-                            onChange={(e) => setHelperInput(e.target.value)}
-                            onKeyPress={(e) => {
-                              if (e.key === 'Enter' && helperInput.trim()) {
-                                handleSendMessage()
-                              }
-                            }}
-                            placeholder="Type your message..."
-                            className="flex-1 px-8 py-6 bg-[#0b1114] border border-[#1a2126] rounded-3xl text-white placeholder-[#8a99a8] focus:outline-none focus:border-[#5e9cb9] transition-all text-sm"
-                          />
-                          <button
-                            onClick={handleSendMessage}
-                            disabled={!helperInput.trim()}
-                            className="px-12 py-6 bg-[#5e9cb9] text-white rounded-3xl text-sm font-black uppercase tracking-widest hover:bg-[#4d8aa8] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-2xl shadow-[#5e9cb9]/40"
-                          >
-                            Send
-                          </button>
+                    <div className="h-full flex flex-col items-center justify-center space-y-16 animate-fadeIn pb-32">
+                      <div className="relative scale-125">
+                        <div className="absolute inset-x-0 -inset-y-20 bg-[#5e9cb9] rounded-full blur-[150px] opacity-10 animate-pulse"></div>
+                        <div className="w-56 h-56 bg-[#0b1114] border-8 border-[#1a2126] rounded-full flex items-center justify-center relative z-10 shadow-[0_0_100px_rgba(0,0,0,0.8)] border-t-[#5e9cb9]/30">
+                          <svg className="w-24 h-24 text-[#5e9cb9]" fill="currentColor" viewBox="0 0 20 20"><path d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z"></path></svg>
                         </div>
                       </div>
-
-                      {/* Voice Button (Commented for now) */}
-                      {/* <div className="flex justify-center gap-8 mt-8">
+                      <div className="text-center space-y-6">
+                        <h3 className="text-4xl font-black text-white tracking-tighter uppercase font-heading">
+                          {isLive ? 'SYSTEM ONLINE' : 'Initialization Ready'}
+                        </h3>
+                        <p className="text-[#8a99a8] text-sm max-w-lg font-black uppercase tracking-[0.2em] leading-loose">
+                          {isLive ? 'Voice uplink established. Speaking allowed.' : 'Secure web-socket link is active. Awaiting biometric voice trigger.'}
+                        </p>
+                      </div>
+                      <div className="flex gap-10">
                         <button
                           onClick={handleLiveLink}
                           className={`px-16 py-6 ${isLive ? 'bg-red-500 shadow-[0_20px_60px_rgba(239,68,68,0.4)]' : 'bg-[#5e9cb9] shadow-[0_20px_60px_rgba(94,156,185,0.4)]'} text-white rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] hover:scale-105 transition-all active:scale-95`}
                         >
-                          {isLive ? 'Stop Voice' : 'Start Voice'}
+                          {isLive ? 'Terminate Link' : 'Open Live Link'}
                         </button>
-                      </div> */}
-                    </div>
-                  )}
-
-                  {/* 7. Guide Tab */}
-                  {activeTab === 'guide' && (
-                    <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
-                      <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl">
-                        <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 font-heading">Self-Hosted SaaS Infrastructure</h3>
-                        <div className="grid grid-cols-2 gap-10">
-                          <div className="space-y-6">
-                            <div className="text-xs font-black text-white uppercase tracking-widest">1. No External Frameworks</div>
-                            <p className="text-xs text-[#8a99a8] leading-relaxed">System is built using 100% custom orchestration logic. No LangChain or AutoGPT dependencies, ensuring maximum speed and lower costs.</p>
-                          </div>
-                          <div className="space-y-6">
-                            <div className="text-xs font-black text-white uppercase tracking-widest">2. Direct Voice Uplink</div>
-                            <p className="text-xs text-[#8a99a8] leading-relaxed">Browser streaming sends audio directly to the edge-optimized brain core via WebSockets for sub-second latency.</p>
-                          </div>
-                          <div className="space-y-6">
-                            <div className="text-xs font-black text-white uppercase tracking-widest">3. Memory Persistence</div>
-                            <p className="text-xs text-[#8a99a8] leading-relaxed">User preferences and conversation history are managed locally, providing a persistent 'brain' for every user without extra costs.</p>
-                          </div>
-                          <div className="space-y-6">
-                            <div className="text-xs font-black text-white uppercase tracking-widest">4. Scale-Ready Backend</div>
-                            <p className="text-xs text-[#8a99a8] leading-relaxed">The Node/Python core handles concurrent sessions, making it ready to be white-labeled and sold as a global service.</p>
-                          </div>
-                        </div>
-                        <div className="mt-16 p-8 bg-[#05080a] rounded-[32px] border border-[#1a2126]">
-                          <div className="flex items-center gap-6">
-                            <div className="w-12 h-12 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9]">
-                              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            </div>
-                            <div className="space-y-1">
-                              <div className="text-[10px] font-black text-white uppercase tracking-widest">Administrator Tip</div>
-                              <div className="text-[9px] text-[#8a99a8] uppercase font-black tracking-widest">Use the 'Playground' tab to test real-time voice interaction before deploying to production.</div>
-                            </div>
-                          </div>
-                        </div>
+                        <button className="px-16 py-6 bg-[#1a2126] text-[#8a99a8] rounded-[32px] text-[11px] font-black uppercase tracking-[0.3em] border border-[#2d383f] hover:text-white transition-all">Preview Mobile</button>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Sticky Footer */}
-                <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
-                  <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Discard Entities</button>
-                  <button
-                    onClick={handleSubmit}
-                    disabled={isDeploying}
-                    className={`px-12 py-4 ${isDeploying ? 'bg-[#1a2126] text-[#8a99a8]' : 'bg-[#5e9cb9] text-white shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8]'} rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all transform active:scale-95 flex items-center gap-3`}
-                  >
-                    {isDeploying ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
-                        Deploying System Core...
-                      </>
-                    ) : 'Deploy System Core'}
-                  </button>
-                </div>
+                {/* 7. Guide Tab */}
+                {activeTab === 'guide' && (
+                  <div className="max-w-4xl mx-auto space-y-12 animate-fadeIn pb-32">
+                    <div className="bg-[#0b1114] p-16 rounded-[60px] border border-[#1a2126] shadow-3xl">
+                      <h3 className="text-sm font-black text-[#5e9cb9] uppercase tracking-[0.4em] mb-12 border-l-8 border-[#5e9cb9] pl-10 font-heading">Self-Hosted SaaS Infrastructure</h3>
+                      <div className="grid grid-cols-2 gap-10">
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">1. No External Frameworks</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">System is built using 100% custom orchestration logic. No LangChain or AutoGPT dependencies, ensuring maximum speed and lower costs.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">2. Direct Voice Uplink</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">Browser streaming sends audio directly to the edge-optimized brain core via WebSockets for sub-second latency.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">3. Memory Persistence</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">User preferences and conversation history are managed locally, providing a persistent 'brain' for every user without extra costs.</p>
+                        </div>
+                        <div className="space-y-6">
+                          <div className="text-xs font-black text-white uppercase tracking-widest">4. Scale-Ready Backend</div>
+                          <p className="text-xs text-[#8a99a8] leading-relaxed">The Node/Python core handles concurrent sessions, making it ready to be white-labeled and sold as a global service.</p>
+                        </div>
+                      </div>
+                      <div className="mt-16 p-8 bg-[#05080a] rounded-[32px] border border-[#1a2126]">
+                        <div className="flex items-center gap-6">
+                          <div className="w-12 h-12 bg-[#5e9cb9]/15 rounded-2xl flex items-center justify-center text-[#5e9cb9]">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                          </div>
+                          <div className="space-y-1">
+                            <div className="text-[10px] font-black text-white uppercase tracking-widest">Administrator Tip</div>
+                            <div className="text-[9px] text-[#8a99a8] uppercase font-black tracking-widest">Use the 'Playground' tab to test real-time voice interaction before deploying to production.</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div >
-            )
-}
-          </div >
-    </Layout >
+
+              {/* Sticky Footer */}
+              <div className="p-8 px-10 border-t border-[#1a2126] bg-[#0b1114] flex justify-end gap-6 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] z-20">
+                <button onClick={() => setShowConfigModal(false)} className="px-10 py-4 text-[11px] font-black uppercase tracking-widest text-[#8a99a8] hover:text-white transition-colors">Discard Entities</button>
+                <button
+                  onClick={handleSubmit}
+                  disabled={isDeploying}
+                  className={`px-12 py-4 ${isDeploying ? 'bg-[#1a2126] text-[#8a99a8]' : 'bg-[#5e9cb9] text-white shadow-2xl shadow-[#5e9cb9]/40 hover:bg-[#4d8aa8]'} rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all transform active:scale-95 flex items-center gap-3`}
+                >
+                  {isDeploying ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#5e9cb9] border-t-transparent rounded-full animate-spin"></div>
+                      Deploying System Core...
+                    </>
+                  ) : 'Deploy System Core'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </Layout>
   )
 }
