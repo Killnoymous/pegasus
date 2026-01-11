@@ -1,0 +1,6 @@
+DEBUG: Loading .env from C:\Users\Chait\OneDrive\Desktop\pegasus\backend\.env
+DEBUG: DATABASE_URL from settings: postgresql+asyncpg://postgres:Kaku%409911940639@db.bnzukgqmuhbriwsdtkzk.supabase.co:5432/postgres
+Attempting to add 'configuration' column to 'ai_agents' table...
+X ERROR: (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedTableError'>: relation "ai_agents" does not exist
+[SQL: ALTER TABLE ai_agents ADD COLUMN configuration JSON DEFAULT '{}']
+(Background on this error at: https://sqlalche.me/e/20/f405)

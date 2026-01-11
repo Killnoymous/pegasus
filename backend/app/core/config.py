@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     
     # CORS
     CORS_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:3001"]
+
+    # AI Services
+    GEMINI_API_KEY: str | None = None
+
     
     class Config:
         env_file = ".env"

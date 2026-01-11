@@ -12,6 +12,7 @@ class AIAgentCreate(BaseModel):
     language: str = "en"
     voice_name: Optional[str] = None
     is_active: bool = True
+    configuration: Optional[dict] = {}
 
 
 class AIAgentUpdate(BaseModel):
@@ -20,6 +21,7 @@ class AIAgentUpdate(BaseModel):
     language: Optional[str] = None
     voice_name: Optional[str] = None
     is_active: Optional[bool] = None
+    configuration: Optional[dict] = None
 
 
 class AIAgentResponse(BaseModel):
@@ -30,6 +32,7 @@ class AIAgentResponse(BaseModel):
     language: str
     voice_name: Optional[str]
     is_active: bool
+    configuration: Optional[dict]
     created_at: datetime
     updated_at: datetime
     
@@ -39,4 +42,5 @@ class AIAgentResponse(BaseModel):
 
 class AgentPhoneLinkRequest(BaseModel):
     phone_number_ids: list[int]
+
 

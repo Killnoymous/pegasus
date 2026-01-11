@@ -1,0 +1,374 @@
+DEBUG: DATABASE_URL from settings: postgresql+asyncpg://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432/postgres
+Attempting to add 'configuration' column to 'ai_agents' table...
+python : Traceback (most 
+recent call last):
+At line:1 char:1
++ python 
+backend/migrate_temp.py 
+2>&1 | Out-File -Encoding 
+ascii migrat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (Tra  
+  ceback (most recent ca   
+ ll last)::String) [],     
+RemoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+  File "C:\Users\Chait\OneD
+rive\Desktop\pegasus\backen
+d\migrate_temp.py", line 
+33, in <module>
+    asyncio.run(migrate())
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\runner
+s.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\runner
+s.py", line 118, in run
+    return self._loop.run_u
+ntil_complete(task)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\base_e
+vents.py", line 691, in 
+run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\OneD
+rive\Desktop\pegasus\backen
+d\migrate_temp.py", line 
+18, in migrate
+    async with 
+engine.begin() as conn:
+               
+^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\contextlib.py"
+, line 210, in __aenter__
+    return await 
+anext(self.gen)
+           
+^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\ext\asyncio\engi
+ne.py", line 1061, in begin
+    async with conn:
+               ^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\ext\asyncio\base
+.py", line 125, in 
+__aenter__
+    return await self.start
+(is_ctxmanager=True)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\ext\asyncio\engi
+ne.py", line 270, in start
+    await greenlet_spawn(se
+lf.sync_engine.connect)
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\util\_concurrenc
+y_py3k.py", line 190, in 
+greenlet_spawn
+    result = context.throw(
+*sys.exc_info())
+             ^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\engine\base.py",
+ line 3268, in connect
+    return 
+self._connection_cls(self)
+           
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\engine\base.py",
+ line 145, in __init__
+    self._dbapi_connection 
+= engine.raw_connection()
+                           
+  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\engine\base.py",
+ line 3292, in 
+raw_connection
+    return 
+self.pool.connect()
+           
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 452, in connect
+    return _ConnectionFairy
+._checkout(self)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 1269, in _checkout
+    fairy = _ConnectionReco
+rd.checkout(pool)
+            ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 716, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\impl.py", 
+line 169, in _do_get
+    with 
+util.safe_reraise():
+         
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\util\langhelpers
+.py", line 146, in __exit__
+    raise exc_value.with_tr
+aceback(exc_tb)
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\impl.py", 
+line 167, in _do_get
+    return 
+self._create_connection()
+           
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 393, in 
+_create_connection
+    return 
+_ConnectionRecord(self)
+           
+^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 678, in __init__
+    self.__connect()
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 902, in __connect
+    with 
+util.safe_reraise():
+         
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\util\langhelpers
+.py", line 146, in __exit__
+    raise exc_value.with_tr
+aceback(exc_tb)
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\pool\base.py", 
+line 898, in __connect
+    self.dbapi_connection 
+= connection = 
+pool._invoke_creator(self)
+                           
+              
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\engine\create.py
+", line 637, in connect
+    return 
+dialect.connect(*cargs, 
+**cparams)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\engine\default.p
+y", line 616, in connect
+    return self.loaded_dbap
+i.connect(*cargs, 
+**cparams)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\dialects\postgre
+sql\asyncpg.py", line 936, 
+in connect
+    await_only(creator_fn(*
+arg, **kw)),
+    ^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\util\_concurrenc
+y_py3k.py", line 125, in 
+await_only
+    return current.driver.s
+witch(awaitable)  # type: 
+ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+sqlalchemy\util\_concurrenc
+y_py3k.py", line 185, in 
+greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connection.py", 
+line 2329, in connect
+    return await 
+connect_utils._connect(
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connect_utils.py", 
+line 1017, in _connect
+    raise last_error or exc
+eptions.TargetServerAttribu
+teNotMatched(
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connect_utils.py", 
+line 991, in _connect
+    conn = await 
+_connect_addr(
+           
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connect_utils.py", 
+line 828, in _connect_addr
+    return await 
+__connect_addr(params, 
+True, *args)
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connect_utils.py", 
+line 873, in __connect_addr
+    tr, pr = await 
+connector
+             
+^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\site-packages\
+asyncpg\connect_utils.py", 
+line 744, in 
+_create_ssl_connection
+    tr, pr = await 
+loop.create_connection(
+             ^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\base_e
+vents.py", line 1083, in 
+create_connection
+    infos = await 
+self._ensure_resolved(
+            ^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\base_e
+vents.py", line 1466, in 
+_ensure_resolved
+    return await 
+loop.getaddrinfo(host, 
+port, family=family, 
+type=type,
+           ^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\asyncio\base_e
+vents.py", line 905, in 
+getaddrinfo
+    return await 
+self.run_in_executor(
+           
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\concurrent\fut
+ures\thread.py", line 59, 
+in run
+    result = 
+self.fn(*self.args, 
+**self.kwargs)
+             ^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Chait\AppD
+ata\Local\Programs\Python\P
+ython312\Lib\socket.py", 
+line 978, in getaddrinfo
+    for res in 
+_socket.getaddrinfo(host, 
+port, family, type, proto, 
+flags):
+               ^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 
+11001] getaddrinfo failed

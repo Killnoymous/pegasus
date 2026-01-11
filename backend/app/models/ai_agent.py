@@ -3,7 +3,7 @@ AI Agent Model
 Stores AI agent configurations for each user (tenant)
 Future: Integration with AI voice services
 """
-from sqlalchemy import Column, Integer, String, Text, Boolean, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, ForeignKey, DateTime, JSON
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.core.database import Base
@@ -19,6 +19,7 @@ class AIAgent(Base):
     language = Column(String, default="en")  # Language code (e.g., en, hi, es)
     voice_name = Column(String, nullable=True)  # Future: Voice selection for AI
     is_active = Column(Boolean, default=True)
+    configuration = Column(JSON, default={})  # Stores advanced config (flow, audio, behavior)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
