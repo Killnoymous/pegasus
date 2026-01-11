@@ -3,14 +3,54 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 15, 23, 42; /* Slate-900 */
-  --background-start-rgb: 248, 250, 252; /* Slate-50 */
-  --background-end-rgb: 248, 250, 252;
+  --background: #05080a;
+  --surface: #0b1114;
+  --surface-hover: #121a1e;
+  --primary: #5e9cb9;
+  --primary-hover: #4d8aa8;
+  --text-primary: #ffffff;
+  --text-secondary: #8a99a8;
+  --border: #1a2126;
+  --border-bright: #2d383f;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
+  color: var(--text-primary);
+  background: var(--background);
   min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-bright);
+}
+
 
