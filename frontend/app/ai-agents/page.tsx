@@ -359,7 +359,7 @@ export default function AIAgentsPage() {
         ) : agents.length === 0 ? (
           <div
             className="bg-[#0b1114] border-2 border-dashed border-[#1a2126] rounded-2xl p-20 text-center hover:border-[#5e9cb9]/50 transition-all group cursor-pointer"
-            onClick={handleOpenCreate}
+            onClick={() => handleOpenCreate()}
           >
             <div className="mx-auto h-20 w-20 bg-[#121a1e] rounded-2xl flex items-center justify-center text-[#8a99a8] group-hover:text-[#5e9cb9] transition-colors mb-6 border border-[#1a2126] group-hover:border-[#5e9cb9]/30">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
