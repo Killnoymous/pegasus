@@ -14,7 +14,8 @@ api_router.include_router(ai_agents.router, prefix="/ai-agents", tags=["AI Agent
 api_router.include_router(call_logs.router, prefix="/call-logs", tags=["Call Logs"])
 api_router.include_router(orders.router, prefix="/orders", tags=["Orders"])
 
-from app.api.v1.endpoints import test_ai
+from app.api.v1.endpoints import test_ai, agent_chat
 api_router.include_router(test_ai.router, prefix="/test-ai", tags=["Test AI"])
+api_router.include_router(agent_chat.router, prefix="/ai-agents", tags=["AI Agent Chat"])
 api_router.include_router(agent_ws.router, tags=["Agent WebSocket"])
 
